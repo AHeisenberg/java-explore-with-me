@@ -11,7 +11,7 @@ import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.location.model.Location;
 import ru.practicum.explore.user.model.User;
 import ru.practicum.explore.request.repository.ParticipationRequestRepository;
-import ru.practicum.explore.statuses.request.StatusRequest;
+import ru.practicum.explore.request.model.RequestStatus;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -47,7 +47,7 @@ public class EventMapperImpl implements EventMapper {
     }
 
     public Integer getConfirmedRequests(Long id) {
-        Integer limitParticipant = participationRequestRepository.countByEvent_IdAndStatus(id, StatusRequest.CONFIRMED);
+        Integer limitParticipant = participationRequestRepository.countByEvent_IdAndStatus(id, RequestStatus.CONFIRMED);
         return limitParticipant;
     }
 

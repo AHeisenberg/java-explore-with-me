@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import ru.practicum.explore.category.dto.CategoryDto;
 import ru.practicum.explore.user.dto.UserShortDto;
 import ru.practicum.explore.location.model.Location;
-import ru.practicum.explore.statuses.event.Status;
+import ru.practicum.explore.event.model.EventStatus;
 
 /**
  * Dto для получения полной информации о событие
@@ -30,7 +30,7 @@ public class EventFullDto {
     private Integer participantLimit;
     private String publishedOn;
     private Boolean requestModeration;
-    private Status state;
+    private EventStatus state;
     private String title;
     private Integer views;
 }

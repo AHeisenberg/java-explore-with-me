@@ -28,7 +28,7 @@ import ru.practicum.explore.category.repository.CategoryRepository;
 import ru.practicum.explore.compilation.repository.CompilationRepository;
 import ru.practicum.explore.event.repository.EventRepository;
 import ru.practicum.explore.user.repository.UserRepository;
-import ru.practicum.explore.statuses.event.Status;
+import ru.practicum.explore.event.model.EventStatus;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -70,7 +70,7 @@ public class AdminServiceImpl implements AdminService {
         Pageable pageable = PageRequest.of((Integer) parameters.get("from") / (Integer) parameters.get("size"),
                 (Integer) parameters.get("size"));
         List<Long> users = (List<Long>) parameters.get("users");
-        List<Status> states = (List<Status>) parameters.get("states");
+        List<EventStatus> states = (List<EventStatus>) parameters.get("states");
         List<Long> catIds = (List<Long>) parameters.get("categories");
         LocalDateTime rangeStart = LocalDateTime.parse((String) parameters.get("rangeStart"),
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
@@ -109,7 +109,7 @@ public class AdminServiceImpl implements AdminService {
     public EventFullDto approvePublishEvent(Long eventId) {
         objectValidate.validateEvent(eventId);
         Event event = eventRepository.findById(eventId).get();
-        event.setState(Status.PUBLISHED);
+        event.setState(EventStatus.PUBLISHED);
         eventRepository.save(event);
         return eventMapper.toEventFullDto(event);
     }
@@ -118,7 +118,7 @@ public class AdminServiceImpl implements AdminService {
     public EventFullDto approveRejectEvent(Long eventId) {
         objectValidate.validateEvent(eventId);
         Event event = eventRepository.findById(eventId).get();
-        event.setState(Status.CANCELED);
+        event.setState(EventStatus.CANCELED);
         eventRepository.save(event);
         return eventMapper.toEventFullDto(event);
     }
@@ -147,27 +147,7 @@ public class AdminServiceImpl implements AdminService {
         categoryRepository.deleteById(catId);
     }
 
-    @Override
-    public Collection<UserDto> getAllUsers(List<Long> ids, Integer from, Integer size) {
-        Pageable pageable = PageRequest.of(from / size, size);
-        Collection<UserDto> userDtoCollection = userRepository.findAllByIdOrderByIdDesc(ids, pageable).stream()
-                .map(userMapper::toUserDto)
-                .collect(Collectors.toList());
-        return userDtoCollection;
-    }
 
-    @Override
-    public UserDto postUser(NewUserRequest userRequest) {
-        User user = userMapper.toUser(userRequest);
-        UserDto userDto = userMapper.toUserDto(userRepository.save(user));
-        return userDto;
-    }
-
-    @Override
-    public void deleteUser(Long userId) {
-        objectValidate.validateUser(userId);
-        userRepository.deleteById(userId);
-    }
 
     @Override
     public CompilationDto createCompilation(NewCompilationDto newCompilationDto) {

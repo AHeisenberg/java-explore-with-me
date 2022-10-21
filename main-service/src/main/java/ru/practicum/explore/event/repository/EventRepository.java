@@ -4,7 +4,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.explore.event.model.Event;
-import ru.practicum.explore.statuses.event.Status;
+import ru.practicum.explore.event.model.EventStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,6 +42,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "AND e.eventDate>=?4 " +
             "AND e.eventDate<=?5 " +
             "order by e.id")
-    List<Event> getAllEvents(List<Long> users, List<Status> states, List<Long> categories,
+    List<Event> getAllEvents(List<Long> users, List<EventStatus> states, List<Long> categories,
                              LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable);
 }

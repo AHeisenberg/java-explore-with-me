@@ -1,9 +1,9 @@
-package ru.practicum.explore.statuses.event;
+package ru.practicum.explore.event.model;
 
 /**
  * Enum статусов событий
  */
-public enum Status {
+public enum EventStatus {
     PENDING,
     PUBLISHED,
     CANCELED

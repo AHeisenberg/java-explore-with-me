@@ -52,20 +52,7 @@ public interface AdminService {
     */
     void deleteCategory(Long catId);
 
-    /*
-    Метод контроллера для получения все пользователей админом
-    */
-    Collection<UserDto> getAllUsers(List<Long> ids, Integer from, Integer size);
 
-    /*
-    Метод контроллера для добавления нового пользователя админом
-    */
-    UserDto postUser(NewUserRequest newUserRequest);
-
-    /*
-    Метод контроллера для удаления пользователя админом
-    */
-    void deleteUser(Long userId);
 
     /*
     Метод контроллера для добавления подборки событий админом

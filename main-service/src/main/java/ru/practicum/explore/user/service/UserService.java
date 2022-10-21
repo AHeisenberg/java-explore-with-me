@@ -5,8 +5,11 @@ import ru.practicum.explore.event.dto.EventShortDto;
 import ru.practicum.explore.event.dto.NewEventDto;
 import ru.practicum.explore.event.dto.UpdateEventRequest;
 import ru.practicum.explore.request.dto.ParticipationRequestDto;
+import ru.practicum.explore.user.dto.NewUserRequest;
+import ru.practicum.explore.user.dto.UserDto;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Интерфейс сервиса пользователя
@@ -66,4 +69,19 @@ public interface UserService {
     Отмена своего запроса на участие в событии.
     */
     ParticipationRequestDto cancelRequestByUser(Long userId, Long requestId);
+
+    /*
+Метод контроллера для получения все пользователей админом
+*/
+    Collection<UserDto> getAllUsers(List<Long> ids, Integer from, Integer size);
+
+    /*
+    Метод контроллера для добавления нового пользователя админом
+    */
+    UserDto postUser(NewUserRequest newUserRequest);
+
+    /*
+    Метод контроллера для удаления пользователя админом
+    */
+    void deleteUser(Long userId);
 }

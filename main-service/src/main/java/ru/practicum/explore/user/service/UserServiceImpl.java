@@ -9,6 +9,8 @@ import ru.practicum.explore.event.dto.EventShortDto;
 import ru.practicum.explore.event.dto.NewEventDto;
 import ru.practicum.explore.event.dto.UpdateEventRequest;
 import ru.practicum.explore.request.dto.ParticipationRequestDto;
+import ru.practicum.explore.user.dto.NewUserRequest;
+import ru.practicum.explore.user.dto.UserDto;
 import ru.practicum.explore.validator.ObjectValidate;
 import ru.practicum.explore.event.mapper.EventMapper;
 import ru.practicum.explore.request.mapper.RequestMapper;
@@ -25,12 +27,13 @@ import ru.practicum.explore.event.repository.EventRepository;
 import ru.practicum.explore.request.repository.ParticipationRequestRepository;
 import ru.practicum.explore.user.repository.UserRepository;
 import ru.practicum.explore.location.service.LocationService;
-import ru.practicum.explore.statuses.event.Status;
-import ru.practicum.explore.statuses.request.StatusRequest;
+import ru.practicum.explore.event.model.EventStatus;
+import ru.practicum.explore.request.model.RequestStatus;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -85,7 +88,7 @@ class UserServiceImpl implements UserService {
         if (!event.getEventDate().isAfter(LocalDateTime.now().minusHours(2))) {
             throw new ForbiddenRequestException(String.format("Bad date."));
         }
-        if (event.getState().equals(Status.PUBLISHED)) {
+        if (event.getState().equals(EventStatus.PUBLISHED)) {
             throw new ForbiddenRequestException(String.format("Sorry, event status published."));
         }
         if (updateEventRequest.getCategory() != null) {
@@ -96,8 +99,8 @@ class UserServiceImpl implements UserService {
             event.setCategory(category);
         }
         eventMapper.updateEventFromNewEventDto(updateEventRequest, event);
-        if (event.getState().equals(Status.CANCELED)) {
-            event.setState(Status.PENDING);
+        if (event.getState().equals(EventStatus.CANCELED)) {
+            event.setState(EventStatus.PENDING);
         }
         return eventMapper.toEventFullDto(eventRepository.save(event));
     }
@@ -117,7 +120,7 @@ class UserServiceImpl implements UserService {
         Location location = locationService.save(newEventDto.getLocation());
         Category category = categoryRepository.findById(Long.valueOf(newEventDto.getCategory())).get();
         Event event = eventMapper.toEvent(newEventDto, user, location, category, eventDate);
-        event.setState(Status.PENDING);
+        event.setState(EventStatus.PENDING);
         EventFullDto eventFullDto = eventMapper.toEventFullDto(eventRepository.save(event));
         return eventFullDto;
     }
@@ -141,10 +144,10 @@ class UserServiceImpl implements UserService {
         if (!Objects.equals(event.getInitiator().getId(), userId)) {
             throw new ForbiddenRequestException(String.format("Sorry you no Event initiator"));
         }
-        if (event.getState().equals(Status.PUBLISHED) || event.getState().equals(Status.CANCELED)) {
+        if (event.getState().equals(EventStatus.PUBLISHED) || event.getState().equals(EventStatus.CANCELED)) {
             throw new ForbiddenRequestException(String.format("Sorry but event status should be pending"));
         }
-        event.setState(Status.CANCELED);
+        event.setState(EventStatus.CANCELED);
         return eventMapper.toEventFullDto(eventRepository.save(event));
     }
 
@@ -174,11 +177,11 @@ class UserServiceImpl implements UserService {
         }
         ParticipationRequest participationRequest = participationRequestRepository.findById(reqId).get();
         Integer limitParticipant = participationRequestRepository.countByEvent_IdAndStatus(eventId,
-                StatusRequest.CONFIRMED);
+                RequestStatus.CONFIRMED);
         if (event.getParticipantLimit() != 0 && event.getParticipantLimit().equals(limitParticipant)) {
-            participationRequest.setStatus(StatusRequest.REJECTED);
+            participationRequest.setStatus(RequestStatus.REJECTED);
         }
-        participationRequest.setStatus(StatusRequest.CONFIRMED);
+        participationRequest.setStatus(RequestStatus.CONFIRMED);
         return requestMapper.toParticipationRequestDto(participationRequestRepository.save(participationRequest));
     }
 
@@ -192,7 +195,7 @@ class UserServiceImpl implements UserService {
             return null;
         }
         ParticipationRequest participationRequest = participationRequestRepository.findById(reqId).get();
-        participationRequest.setStatus(StatusRequest.REJECTED);
+        participationRequest.setStatus(RequestStatus.REJECTED);
         return requestMapper.toParticipationRequestDto(participationRequestRepository.save(participationRequest));
     }
 
@@ -213,22 +216,22 @@ class UserServiceImpl implements UserService {
         if (Objects.equals(eventRepository.findById(eventId).get().getInitiator().getId(), userId)) {
             throw new ForbiddenRequestException(String.format("Sorry you no Event initiator"));
         }
-        if (eventRepository.findById(eventId).get().getState().equals(Status.PUBLISHED)) {
+        if (eventRepository.findById(eventId).get().getState().equals(EventStatus.PUBLISHED)) {
             User user = userRepository.findById(userId).get();
             Event event = eventRepository.findById(eventId).get();
             ParticipationRequest participationRequest = new ParticipationRequest().builder()
                     .created(LocalDateTime.now())
                     .event(event)
                     .requester(user)
-                    .status(StatusRequest.PENDING)
+                    .status(RequestStatus.PENDING)
                     .build();
             Integer limitParticipant = participationRequestRepository.countByEvent_IdAndStatus(eventId,
-                    StatusRequest.CONFIRMED);
+                    RequestStatus.CONFIRMED);
             if (!event.getRequestModeration()) {
-                participationRequest.setStatus(StatusRequest.CONFIRMED);
+                participationRequest.setStatus(RequestStatus.CONFIRMED);
             }
             if (event.getParticipantLimit() != 0 && Objects.equals(event.getParticipantLimit(), limitParticipant)) {
-                participationRequest.setStatus(StatusRequest.REJECTED);
+                participationRequest.setStatus(RequestStatus.REJECTED);
             }
             return requestMapper.toParticipationRequestDto(participationRequestRepository.save(participationRequest));
         } else {
@@ -244,7 +247,29 @@ class UserServiceImpl implements UserService {
             throw new ForbiddenRequestException(String.format("Sorry you no Event initiator"));
         }
         ParticipationRequest participationRequest = participationRequestRepository.findById(requestId).get();
-        participationRequest.setStatus(StatusRequest.CANCELED);
+        participationRequest.setStatus(RequestStatus.CANCELED);
         return requestMapper.toParticipationRequestDto(participationRequestRepository.save(participationRequest));
+    }
+
+    @Override
+    public Collection<UserDto> getAllUsers(List<Long> ids, Integer from, Integer size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+        Collection<UserDto> userDtoCollection = userRepository.findAllByIdOrderByIdDesc(ids, pageable).stream()
+                .map(userMapper::toUserDto)
+                .collect(Collectors.toList());
+        return userDtoCollection;
+    }
+
+    @Override
+    public UserDto postUser(NewUserRequest userRequest) {
+        User user = userMapper.toUser(userRequest);
+        UserDto userDto = userMapper.toUserDto(userRepository.save(user));
+        return userDto;
+    }
+
+    @Override
+    public void deleteUser(Long userId) {
+        objectValidate.validateUser(userId);
+        userRepository.deleteById(userId);
     }
 }

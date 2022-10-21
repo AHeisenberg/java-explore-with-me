@@ -11,8 +11,7 @@ import ru.practicum.explore.event.dto.AdminUpdateEventRequest;
 import ru.practicum.explore.event.dto.EventFullDto;
 import ru.practicum.explore.user.dto.NewUserRequest;
 import ru.practicum.explore.user.dto.UserDto;
-import ru.practicum.explore.admin.AdminService;
-import ru.practicum.explore.statuses.event.Status;
+import ru.practicum.explore.event.model.EventStatus;
 
 import java.util.Collection;
 import java.util.List;
@@ -37,7 +36,7 @@ public class AdminController {
     */
     @GetMapping("/events")
     public Collection<EventFullDto> getAllEvents(@RequestParam List<Long> users,
-                                                 @RequestParam List<Status> states,
+                                                 @RequestParam List<EventStatus> states,
                                                  @RequestParam List<Long> categories,
                                                  @RequestParam String rangeStart,
                                                  @RequestParam String rangeEnd,
@@ -111,34 +110,7 @@ public class AdminController {
         adminService.deleteCategory(catId);
     }
 
-    /*
-    Метод контроллера для получения все пользователей админом
-    */
-    @GetMapping("/users")
-    public Collection<UserDto> getAllUsers(@RequestParam List<Long> ids,
-                                           @RequestParam(defaultValue = "0") Integer from,
-                                           @RequestParam(defaultValue = "10") Integer size) {
-        log.info("Admin get all users");
-        return adminService.getAllUsers(ids, from, size);
-    }
 
-    /*
-    Метод контроллера для добавления нового пользователя админом
-    */
-    @PostMapping("/users")
-    public UserDto postUser(@RequestBody NewUserRequest newUserRequest) {
-        log.info("Admin post user");
-        return adminService.postUser(newUserRequest);
-    }
-
-    /*
-    Метод контроллера для удаления пользователя админом
-    */
-    @DeleteMapping("/users/{userId}")
-    public void deleteUser(@PathVariable Long userId) {
-        log.info("Admin delete user by id={}", userId);
-        adminService.deleteUser(userId);
-    }
 
     /*
     Метод контроллера для добавления подборки событий админом

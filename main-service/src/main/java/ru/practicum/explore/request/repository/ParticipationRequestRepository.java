@@ -3,7 +3,7 @@ package ru.practicum.explore.request.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.explore.request.model.ParticipationRequest;
-import ru.practicum.explore.statuses.request.StatusRequest;
+import ru.practicum.explore.request.model.RequestStatus;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public interface ParticipationRequestRepository extends JpaRepository<Participat
     /*
     Метод получения числа одобренных заявок на участия в событие
     */
-    Integer countByEvent_IdAndStatus(Long eventId, StatusRequest confirmed);
+    Integer countByEvent_IdAndStatus(Long eventId, RequestStatus confirmed);
 
     /*
     Метод получения всех запросов на участие текущим пользователем по id

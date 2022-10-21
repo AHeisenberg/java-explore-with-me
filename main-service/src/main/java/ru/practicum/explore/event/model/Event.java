@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.location.model.Location;
 import ru.practicum.explore.user.model.User;
-import ru.practicum.explore.statuses.event.Status;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -53,5 +52,5 @@ public class Event {
     private Boolean requestModeration;
     private String title;
     @Enumerated(EnumType.STRING)
-    private Status state;
+    private EventStatus state;
 }

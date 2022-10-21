@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.user.model.User;
-import ru.practicum.explore.statuses.request.StatusRequest;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -35,5 +34,5 @@ public class ParticipationRequest {
     @JoinColumn(name = "requester_id")
     private User requester;
     @Enumerated(EnumType.STRING)
-    private StatusRequest status;
+    private RequestStatus status;
 }
