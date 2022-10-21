@@ -1,5 +1,6 @@
 package ru.practicum.explore.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.dto.EndpointHit;
 import ru.practicum.explore.dto.ViewStats;
@@ -15,26 +16,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class StatsServiceImpl implements StatsService {
-    private StatsRepository statsRepository;
-    private HitMapper hitMapper;
+    private final StatsRepository statsRepository;
+    private final HitMapper hitMapper;
 
-    public StatsServiceImpl(StatsRepository statsRepository, HitMapper hitMapper) {
-        this.statsRepository = statsRepository;
-        this.hitMapper = hitMapper;
-    }
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
-    public EndpointHit save(EndpointHit endpointHit) {
+    public EndpointHit createHit(EndpointHit endpointHit) {
         Hit hit = hitMapper.toHit(endpointHit);
         return hitMapper.toEndpointHit(statsRepository.save(hit));
     }
 
     @Override
     public Collection<ViewStats> getStats(String start, String end, List<String> uris, Boolean unique) {
-        LocalDateTime startTime = LocalDateTime.parse(start, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        LocalDateTime endTime = LocalDateTime.parse(end, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        Collection<ViewStats> list = new ArrayList<>();
+        LocalDateTime startTime = LocalDateTime.parse(start, FORMATTER);
+        LocalDateTime endTime = LocalDateTime.parse(end, FORMATTER);
+        Collection<ViewStats> viewStats = new ArrayList<>();
         if (uris == null) {
             uris = statsRepository.findAllByTime(startTime, endTime).stream().distinct().collect(Collectors.toList());
         }
@@ -46,9 +45,9 @@ public class StatsServiceImpl implements StatsService {
                 hits = statsRepository.findAllByUri(uri, startTime, endTime);
             }
             if (hits.size() > 0) {
-                list.add(hitMapper.toViewStats(hits));
+                viewStats.add(hitMapper.toViewStats(hits));
             }
         }
-        return list;
+        return viewStats;
     }
 }

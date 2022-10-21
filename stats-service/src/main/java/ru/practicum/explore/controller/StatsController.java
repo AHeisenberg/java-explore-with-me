@@ -1,6 +1,7 @@
 package ru.practicum.explore.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.dto.EndpointHit;
 import ru.practicum.explore.dto.ViewStats;
@@ -9,34 +10,24 @@ import ru.practicum.explore.service.StatsService;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Контроллер статистики
- */
 @RestController
+@Slf4j
+@RequiredArgsConstructor
 public class StatsController {
-    private StatsService statsService;
+    private final StatsService statsService;
 
-    @Autowired
-    public StatsController(StatsService statsService) {
-        this.statsService = statsService;
-    }
-
-    /*
-    Метод контроллера по сохранению статистики
-    */
     @PostMapping("/hit")
-    public EndpointHit save(@RequestBody EndpointHit endpointHit) {
-        return statsService.save(endpointHit);
+    public EndpointHit createHit(@RequestBody EndpointHit endpointHit) {
+        log.info("create hit {}", endpointHit);
+        return statsService.createHit(endpointHit);
     }
 
-    /*
-    Метод контроллера по получению статистики
-    */
     @GetMapping("/stats")
     public Collection<ViewStats> getStats(@RequestParam String start,
                                           @RequestParam String end,
                                           @RequestParam List<String> uris,
                                           @RequestParam(defaultValue = "false") Boolean unique) {
+        log.info("get stats {}", uris);
         return statsService.getStats(start, end, uris, unique);
     }
 }
