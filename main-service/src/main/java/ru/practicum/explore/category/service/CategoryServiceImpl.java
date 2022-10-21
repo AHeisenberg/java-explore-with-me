@@ -1,6 +1,6 @@
 package ru.practicum.explore.category.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,18 +18,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
-    private CategoryRepository categoryRepository;
-    private CategoryMapper categoryMapper;
-    private ObjectValidate objectValidate;
-
-    @Autowired
-    public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryMapper categoryMapper,
-                               ObjectValidate objectValidate) {
-        this.categoryRepository = categoryRepository;
-        this.categoryMapper = categoryMapper;
-        this.objectValidate = objectValidate;
-    }
+    private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
+    private final ObjectValidate objectValidate;
 
     @Override
     public Collection<CategoryDto> findAll(Integer from, Integer size) {
