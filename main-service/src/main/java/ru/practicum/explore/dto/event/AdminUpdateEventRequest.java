@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.explore.models.location.Location;
+import ru.practicum.explore.location.model.Location;
 
 /**
  * Dto обновления события адирном

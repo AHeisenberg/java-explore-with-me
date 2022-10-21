@@ -1,9 +1,9 @@
-package ru.practicum.explore.services.privateApi.location;
+package ru.practicum.explore.location.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.practicum.explore.models.location.Location;
-import ru.practicum.explore.repositories.location.LocationRepository;
+import ru.practicum.explore.location.model.Location;
+import ru.practicum.explore.location.repository.LocationRepository;
 
 @Service
 public class LocationServiceImpl implements LocationService {

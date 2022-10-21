@@ -1,4 +1,4 @@
-package ru.practicum.explore.models.location;
+package ru.practicum.explore.location.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

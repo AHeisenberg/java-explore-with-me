@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.explore.models.category.Category;
-import ru.practicum.explore.models.location.Location;
+import ru.practicum.explore.location.model.Location;
 import ru.practicum.explore.models.user.User;
 import ru.practicum.explore.statuses.event.Status;
 

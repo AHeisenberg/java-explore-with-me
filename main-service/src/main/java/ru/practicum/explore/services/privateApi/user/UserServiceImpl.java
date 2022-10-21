@@ -17,14 +17,14 @@ import ru.practicum.explore.models.category.Category;
 import ru.practicum.explore.models.error.ForbiddenRequestException;
 import ru.practicum.explore.models.error.ObjectNotFoundException;
 import ru.practicum.explore.models.event.Event;
-import ru.practicum.explore.models.location.Location;
+import ru.practicum.explore.location.model.Location;
 import ru.practicum.explore.models.request.ParticipationRequest;
 import ru.practicum.explore.models.user.User;
 import ru.practicum.explore.repositories.category.CategoryRepository;
 import ru.practicum.explore.repositories.event.EventRepository;
 import ru.practicum.explore.repositories.request.ParticipationRequestRepository;
 import ru.practicum.explore.repositories.user.UserRepository;
-import ru.practicum.explore.services.privateApi.location.LocationService;
+import ru.practicum.explore.location.service.LocationService;
 import ru.practicum.explore.statuses.event.Status;
 import ru.practicum.explore.statuses.request.StatusRequest;
 

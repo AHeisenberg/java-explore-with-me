@@ -8,7 +8,7 @@ import ru.practicum.explore.mappers.category.CategoryMapper;
 import ru.practicum.explore.mappers.user.UserMapper;
 import ru.practicum.explore.models.category.Category;
 import ru.practicum.explore.models.event.Event;
-import ru.practicum.explore.models.location.Location;
+import ru.practicum.explore.location.model.Location;
 import ru.practicum.explore.models.user.User;
 import ru.practicum.explore.repositories.request.ParticipationRequestRepository;
 import ru.practicum.explore.statuses.request.StatusRequest;

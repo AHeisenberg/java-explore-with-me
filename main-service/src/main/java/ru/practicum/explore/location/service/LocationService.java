@@ -1,6 +1,6 @@
-package ru.practicum.explore.services.privateApi.location;
+package ru.practicum.explore.location.service;
 
-import ru.practicum.explore.models.location.Location;
+import ru.practicum.explore.location.model.Location;
 
 /**
  * Интерфейс сервиса локации

@@ -3,7 +3,7 @@ package ru.practicum.explore.mappers.event;
 import ru.practicum.explore.dto.event.*;
 import ru.practicum.explore.models.category.Category;
 import ru.practicum.explore.models.event.Event;
-import ru.practicum.explore.models.location.Location;
+import ru.practicum.explore.location.model.Location;
 import ru.practicum.explore.models.user.User;
 
 import java.time.LocalDateTime;
