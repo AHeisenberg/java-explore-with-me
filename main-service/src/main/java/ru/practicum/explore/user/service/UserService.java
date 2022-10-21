@@ -33,17 +33,17 @@ public interface UserService {
     /*
     Получение полной информации о событии добавленном текущим пользователем.
     */
-    EventFullDto getEventFull(Long userId, Long eventId);
+    EventFullDto findEventFull(Long userId, Long eventId);
 
     /*
     Отмена события добавленного текущим пользователем.
     */
-    EventFullDto cancelEvent(Long userId, Long eventId);
+    EventFullDto cancelEventByUser(Long userId, Long eventId);
 
     /*
     Получение информации о запросах на участие в событии текущего пользователя.
     */
-    Collection<ParticipationRequestDto> getRequestByUser(Long userId, Long eventId);
+    Collection<ParticipationRequestDto> findRequestByUser(Long userId, Long eventId);
 
     /*
     Подтверждение чужой заявки на участие в событии текущего пользователя
@@ -58,7 +58,7 @@ public interface UserService {
     /*
     Получение информации о заявках текущего пользователя на участие в чужих событиях.
     */
-    Collection<ParticipationRequestDto> getRequestsByUser(Long userId);
+    Collection<ParticipationRequestDto> findRequestsByUser(Long userId);
 
     /*
     Добавление запроса от текущего пользователя на участие в событии.

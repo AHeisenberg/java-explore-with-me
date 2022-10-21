@@ -7,23 +7,12 @@ import ru.practicum.explore.request.model.RequestStatus;
 
 import java.util.List;
 
-/**
- * Интерфейс репозитория запросов на участия
- */
 public interface ParticipationRequestRepository extends JpaRepository<ParticipationRequest, Long> {
-    /*
-     Метод получения всех запросов на участие в событиях  по id события и id тользователя
-    */
+
+    List<ParticipationRequest> findAllByRequester_IdOrderById(Long userId);
+
     @Query("select pr from ParticipationRequest  pr where pr.event.id=?1 and pr.event.initiator.id=?2")
     List<ParticipationRequest> findAllByEvent(Long eventId, Long userId);
 
-    /*
-    Метод получения числа одобренных заявок на участия в событие
-    */
     Integer countByEvent_IdAndStatus(Long eventId, RequestStatus confirmed);
-
-    /*
-    Метод получения всех запросов на участие текущим пользователем по id
-    */
-    List<ParticipationRequest> findAllByRequester_IdOrderById(Long userId);
 }

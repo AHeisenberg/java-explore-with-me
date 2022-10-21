@@ -126,7 +126,7 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    public EventFullDto getEventFull(Long userId, Long eventId) {
+    public EventFullDto findEventFull(Long userId, Long eventId) {
         objectValidate.validateUser(userId);
         objectValidate.validateEvent(eventId);
         Event event = eventRepository.findById(eventId).get();
@@ -137,7 +137,7 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    public EventFullDto cancelEvent(Long userId, Long eventId) {
+    public EventFullDto cancelEventByUser(Long userId, Long eventId) {
         objectValidate.validateUser(userId);
         objectValidate.validateEvent(eventId);
         Event event = eventRepository.findById(eventId).get();
@@ -152,7 +152,7 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<ParticipationRequestDto> getRequestByUser(Long userId, Long eventId) {
+    public Collection<ParticipationRequestDto> findRequestByUser(Long userId, Long eventId) {
         objectValidate.validateUser(userId);
         objectValidate.validateEvent(eventId);
         Event event = eventRepository.findById(eventId).get();
@@ -200,7 +200,7 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<ParticipationRequestDto> getRequestsByUser(Long userId) {
+    public Collection<ParticipationRequestDto> findRequestsByUser(Long userId) {
         objectValidate.validateUser(userId);
         Collection<ParticipationRequestDto> listRequests =
                 participationRequestRepository.findAllByRequester_IdOrderById(userId).stream()

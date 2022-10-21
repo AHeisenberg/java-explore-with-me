@@ -1,26 +1,33 @@
 package ru.practicum.explore.user.mapper;
 
+import org.springframework.stereotype.Component;
 import ru.practicum.explore.user.dto.NewUserRequest;
 import ru.practicum.explore.user.dto.UserDto;
+import ru.practicum.explore.user.dto.UserDto.UserDtoBuilder;
 import ru.practicum.explore.user.dto.UserShortDto;
 import ru.practicum.explore.user.model.User;
 
-/**
- * Интерфейс маппера пользователя
- */
-public interface UserMapper {
-    /*
-    Метод маппера  для получения dto пользователя из модели
-    */
-    UserDto toUserDto(User user);
+@Component
+public class UserMapper {
+    public UserDto toUserDto(User user) {
+        UserDtoBuilder userDto = UserDto.builder();
+        userDto.id(user.getId());
+        userDto.name(user.getName());
+        userDto.email(user.getEmail());
+        return userDto.build();
+    }
 
-    /*
-    Метод маппера  для добовления модели пользователя из dto
-    */
-    User toUser(NewUserRequest newUserRequest);
+    public User toUser(NewUserRequest newUserRequest) {
+        return User.builder()
+                .email(newUserRequest.getEmail())
+                .name(newUserRequest.getName())
+                .build();
+    }
 
-    /*
-    Метод маппера  для получения краткой информации о пользователе
-    */
-    UserShortDto toUserShortDto(User user);
+    public UserShortDto toUserShortDto(User user) {
+        return UserShortDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .build();
+    }
 }
