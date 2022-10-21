@@ -1,14 +1,11 @@
-package ru.practicum.explore.admin;
+package ru.practicum.explore.event.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.practicum.explore.category.mapper.CategoryMapper;
 import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.category.repository.CategoryRepository;
-import ru.practicum.explore.compilation.mapper.CompilationMapper;
-import ru.practicum.explore.compilation.repository.CompilationRepository;
 import ru.practicum.explore.event.dto.AdminUpdateEventRequest;
 import ru.practicum.explore.event.dto.EventFullDto;
 import ru.practicum.explore.event.mapper.EventMapper;
@@ -17,8 +14,6 @@ import ru.practicum.explore.event.model.EventStatus;
 import ru.practicum.explore.event.repository.EventRepository;
 import ru.practicum.explore.exc.ForbiddenRequestException;
 import ru.practicum.explore.exc.ObjectNotFoundException;
-import ru.practicum.explore.user.mapper.UserMapper;
-import ru.practicum.explore.user.repository.UserRepository;
 import ru.practicum.explore.validator.ObjectValidate;
 
 import java.time.LocalDateTime;
@@ -29,35 +24,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-//@RequiredArgsConstructor
-public class AdminServiceImpl implements AdminService {
-    private CategoryRepository categoryRepository;
-    private CompilationRepository compilationRepository;
-    private EventRepository eventRepository;
-    private UserRepository userRepository;
-    private EventMapper eventMapper;
-    private CategoryMapper categoryMapper;
-    private UserMapper userMapper;
-    private CompilationMapper compilationMapper;
-    private ObjectValidate objectValidate;
-
-    @Autowired
-    public AdminServiceImpl(CategoryRepository categoryRepository, CompilationRepository compilationRepository,
-                            EventRepository eventRepository, UserRepository userRepository, EventMapper eventMapper,
-                            CategoryMapper categoryMapper, UserMapper userMapper, CompilationMapper compilationMapper,
-                            ObjectValidate objectValidate) {
-        this.categoryRepository = categoryRepository;
-        this.compilationRepository = compilationRepository;
-        this.eventRepository = eventRepository;
-        this.userRepository = userRepository;
-        this.eventMapper = eventMapper;
-        this.categoryMapper = categoryMapper;
-        this.userMapper = userMapper;
-        this.compilationMapper = compilationMapper;
-        this.objectValidate = objectValidate;
-    }
-
-
+@RequiredArgsConstructor
+public class AdminEventServiceImpl implements AdminEventService {
+    private final CategoryRepository categoryRepository;
+    private final EventRepository eventRepository;
+    private final EventMapper eventMapper;
+    private final ObjectValidate objectValidate;
 
 
     @Override

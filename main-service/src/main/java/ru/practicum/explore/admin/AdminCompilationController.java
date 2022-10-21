@@ -6,13 +6,14 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.compilation.dto.CompilationDto;
 import ru.practicum.explore.compilation.dto.NewCompilationDto;
 import ru.practicum.explore.compilation.service.CompilationService;
+import ru.practicum.explore.event.service.AdminEventService;
 
 @RestController
 @RequestMapping(path = "/admin/compilations")
 @Slf4j
 @RequiredArgsConstructor
 public class AdminCompilationController {
-    private final AdminService adminService;
+    private final AdminEventService adminEventService;
 
     private final CompilationService compilationService;
 

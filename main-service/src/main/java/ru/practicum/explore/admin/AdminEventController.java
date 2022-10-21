@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.event.dto.AdminUpdateEventRequest;
 import ru.practicum.explore.event.dto.EventFullDto;
 import ru.practicum.explore.event.model.EventStatus;
+import ru.practicum.explore.event.service.AdminEventService;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,9 +18,7 @@ import java.util.Map;
 @Slf4j
 public class AdminEventController {
 
-//    private final EventService eventService;
-
-    private final AdminService adminService;
+    private final AdminEventService adminEventService;
 
 
     @GetMapping
@@ -40,26 +39,26 @@ public class AdminEventController {
                 "size", size
         );
         log.info("Admin Get events by parameters {}", parameters);
-        return adminService.getAllEvents(parameters);
+        return adminEventService.getAllEvents(parameters);
     }
 
     @PutMapping("/{eventId}")
     public EventFullDto putEvent(@PathVariable Long eventId,
                                  @RequestBody AdminUpdateEventRequest adminUpdateEventRequest) {
         log.info("Admin Put eventid={}", eventId);
-        return adminService.putEvent(eventId, adminUpdateEventRequest);
+        return adminEventService.putEvent(eventId, adminUpdateEventRequest);
     }
 
     @PatchMapping("/{eventId}/publish")
     public EventFullDto approvePublishEvent(@PathVariable Long eventId) {
         log.info("Admin approve publish eventId={}", eventId);
-        return adminService.approvePublishEvent(eventId);
+        return adminEventService.approvePublishEvent(eventId);
     }
 
     @PatchMapping("/{eventId}/reject")
     public EventFullDto approveRejectEvent(@PathVariable Long eventId) {
         log.info("Admin approve reject eventId={}", eventId);
-        return adminService.approveRejectEvent(eventId);
+        return adminEventService.approveRejectEvent(eventId);
     }
 
 }
