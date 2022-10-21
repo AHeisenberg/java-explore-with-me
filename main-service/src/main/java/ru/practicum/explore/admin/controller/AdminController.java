@@ -8,6 +8,7 @@ import ru.practicum.explore.category.dto.CategoryDto;
 import ru.practicum.explore.category.dto.NewCategoryDto;
 import ru.practicum.explore.compilation.dto.CompilationDto;
 import ru.practicum.explore.compilation.dto.NewCompilationDto;
+import ru.practicum.explore.compilation.service.CompilationService;
 import ru.practicum.explore.event.dto.AdminUpdateEventRequest;
 import ru.practicum.explore.event.dto.EventFullDto;
 import ru.practicum.explore.event.model.EventStatus;
@@ -24,6 +25,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AdminController {
     private final AdminService adminService;
+
+    private final CompilationService compilationService;
 
     @GetMapping("/events")
 
@@ -104,40 +107,43 @@ public class AdminController {
         adminService.deleteUser(userId);
     }
 
-    @PostMapping("/compilations")
-    public CompilationDto createCompilation(@RequestBody NewCompilationDto newCompilationDto) {
-        log.info("Admin post compilation");
-        return adminService.createCompilation(newCompilationDto);
-    }
-
-    @DeleteMapping("/compilations/{compId}")
-    public void deleteCompilation(@PathVariable long compId) {
-        log.info("Admin delete compilation id={}", compId);
-        adminService.deleteCompilation(compId);
-    }
-
-    @DeleteMapping("/compilations/{compId}/pin")
-    public void unpinCompilation(@PathVariable long compId) {
-        log.info("Admin unpin compilation id={}", compId);
-        adminService.unpinCompilation(compId);
-    }
-
-    @PatchMapping("/compilations/{compId}/pin")
-    public void pinCompilation(@PathVariable long compId) {
-        log.info("Admin pin compilation id={}", compId);
-        adminService.pinCompilation(compId);
-    }
-
-
-    @DeleteMapping("/compilations/{compId}/events/{eventId}")
-    public void deleteEventInCompilation(@PathVariable long compId, @PathVariable long eventId) {
-        log.info("Admin delete event id={} in compilation id={}", eventId, compId);
-        adminService.deleteEventInCompilation(compId, eventId);
-    }
-
-    @PatchMapping("/compilations/{compId}/events/{eventId}")
-    public void addEventInCompilation(@PathVariable long compId, @PathVariable long eventId) {
-        log.info("Admin add event id={} in compilation id={}", eventId, compId);
-        adminService.addEventInCompilation(compId, eventId);
-    }
+//    @PostMapping("/compilations")
+//    public CompilationDto createCompilation(@RequestBody NewCompilationDto newCompilationDto) {
+//        log.info("Admin post compilation");
+//        return adminService.createCompilation(newCompilationDto);
+//    }
+//
+//    //TODO
+//    @DeleteMapping("/compilations/{compId}")
+//    public void deleteCompilation(@PathVariable long compId) {
+//        log.info("Admin delete compilation id={}", compId);
+//        adminService.deleteCompilation(compId);
+////        compilationService.findCompilationById(compId);
+//
+//    }
+//
+//    @DeleteMapping("/compilations/{compId}/pin")
+//    public void unpinCompilation(@PathVariable long compId) {
+//        log.info("Admin unpin compilation id={}", compId);
+//        adminService.unpinCompilation(compId);
+//    }
+//
+//    @PatchMapping("/compilations/{compId}/pin")
+//    public void pinCompilation(@PathVariable long compId) {
+//        log.info("Admin pin compilation id={}", compId);
+//        adminService.pinCompilation(compId);
+//    }
+//
+//
+//    @DeleteMapping("/compilations/{compId}/events/{eventId}")
+//    public void deleteEventInCompilation(@PathVariable long compId, @PathVariable long eventId) {
+//        log.info("Admin delete event id={} in compilation id={}", eventId, compId);
+//        adminService.deleteEventInCompilation(compId, eventId);
+//    }
+//
+//    @PatchMapping("/compilations/{compId}/events/{eventId}")
+//    public void addEventInCompilation(@PathVariable long compId, @PathVariable long eventId) {
+//        log.info("Admin add event id={} in compilation id={}", eventId, compId);
+//        adminService.addEventInCompilation(compId, eventId);
+//    }
 }
