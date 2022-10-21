@@ -5,8 +5,11 @@ import ru.practicum.explore.event.dto.EventShortDto;
 import ru.practicum.explore.event.dto.NewEventDto;
 import ru.practicum.explore.event.dto.UpdateEventRequest;
 import ru.practicum.explore.request.dto.ParticipationRequestDto;
+import ru.practicum.explore.user.dto.NewUserRequest;
+import ru.practicum.explore.user.dto.UserDto;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface UserService {
 
@@ -31,5 +34,11 @@ public interface UserService {
     ParticipationRequestDto postRequestUser(long userId, long eventId);
 
     ParticipationRequestDto cancelRequestByUser(long userId, long requestId);
+
+    Collection<UserDto> findAllUsers(List<Long> ids, int from, int size);
+
+    UserDto postUser(NewUserRequest newUserRequest);
+
+    void deleteUser(long userId);
 
 }

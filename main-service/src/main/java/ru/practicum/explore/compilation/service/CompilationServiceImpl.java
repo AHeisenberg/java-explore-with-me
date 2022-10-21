@@ -1,16 +1,21 @@
 package ru.practicum.explore.compilation.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.compilation.dto.CompilationDto;
+import ru.practicum.explore.compilation.dto.NewCompilationDto;
 import ru.practicum.explore.compilation.mapper.CompilationMapper;
 import ru.practicum.explore.compilation.model.Compilation;
 import ru.practicum.explore.compilation.repository.CompilationRepository;
 import ru.practicum.explore.event.dto.EventShortDto;
 import ru.practicum.explore.event.mapper.EventMapper;
+import ru.practicum.explore.event.model.Event;
+import ru.practicum.explore.event.repository.EventRepository;
 import ru.practicum.explore.validator.CommonValidator;
+import org.modelmapper.ModelMapper;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,14 +27,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CompilationServiceImpl implements CompilationService {
     private final CompilationRepository compilationRepository;
+
+    private final EventRepository eventRepository;
     private final CompilationMapper compilationMapper;
     private final EventMapper eventMapper;
     private final CommonValidator commonValidator;
 
-
     @Override
     public Collection<CompilationDto> findAllCompilations(Boolean pinned, int from, int size) {
-        Pageable pageable = PageRequest.of(from / size, size);
+        Pageable pageable = PageRequest.of(from, size);
         Collection<Compilation> compilationCollection =
                 compilationRepository.findAllByPinned(pinned, pageable);
         Collection<CompilationDto> compilationDtoCollection = new ArrayList<>();
@@ -48,7 +54,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    public Optional<CompilationDto> findCompilationById(long compId) {
+    public CompilationDto findCompilationById(long compId) {
         commonValidator.compilationValidator(compId);
         Compilation compilation = compilationRepository.findById(compId).get();
         List<EventShortDto> eventShortDtoList = new ArrayList<>();
@@ -57,7 +63,65 @@ public class CompilationServiceImpl implements CompilationService {
                     .map(eventMapper::toEventShortDto)
                     .collect(Collectors.toList());
         }
-        return Optional.of(compilationMapper.toCompilationDto(compilation, eventShortDtoList));
+        return compilationMapper.toCompilationDto(compilation, eventShortDtoList);
     }
 
+    @Override
+    public CompilationDto createCompilation(NewCompilationDto newCompilationDto) {
+        List<Event> events = eventRepository.findAllById(newCompilationDto.getEvents());
+        Compilation compilation = compilationMapper.toCompilation(newCompilationDto, events);
+        compilationRepository.save(compilation);
+        List<EventShortDto> eventShortDtoList = events.stream()
+                .map(eventMapper::toEventShortDto)
+                .collect(Collectors.toList());
+        return compilationMapper.toCompilationDto(compilation, eventShortDtoList);
+    }
+
+    @Override
+    public void deleteCompilation(long compId) {
+        commonValidator.compilationValidator(compId);
+        compilationRepository.deleteById(compId);
+    }
+
+    @Override
+    public void pinCompilation(long compId) {
+        commonValidator.compilationValidator(compId);
+        Compilation compilation = compilationRepository.findById(compId).get();
+        compilation.setPinned(true);
+        compilationRepository.save(compilation);
+    }
+
+    @Override
+    public void unpinCompilation(long compId) {
+        commonValidator.compilationValidator(compId);
+        Compilation compilation = compilationRepository.findById(compId).get();
+        compilation.setPinned(false);
+        compilationRepository.save(compilation);
+    }
+
+    @Override
+    public void deleteEventInCompilation(long compId, long eventId) {
+        commonValidator.compilationValidator(compId);
+        commonValidator.eventValidator(eventId);
+        Compilation compilation = compilationRepository.findById(compId).get();
+        Event event = eventRepository.findById(eventId).get();
+        if (!compilation.getEvents().contains(event)) {
+            return;
+        }
+        compilation.getEvents().remove(event);
+        compilationRepository.save(compilation);
+    }
+
+    @Override
+    public void addEventInCompilation(long compId, long eventId) {
+        commonValidator.compilationValidator(compId);
+        commonValidator.eventValidator(eventId);
+        Compilation compilation = compilationRepository.findById(compId).get();
+        Event event = eventRepository.findById(eventId).get();
+        if (compilation.getEvents().contains(event)) {
+            return;
+        }
+        compilation.getEvents().add(event);
+        compilationRepository.save(compilation);
+    }
 }

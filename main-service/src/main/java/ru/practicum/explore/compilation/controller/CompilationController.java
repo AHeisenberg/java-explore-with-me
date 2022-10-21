@@ -25,7 +25,7 @@ public class CompilationController {
     }
 
     @GetMapping("/{compId}")
-    public Optional<CompilationDto> findCompilationById(@PathVariable long compId) {
+    public CompilationDto findCompilationById(@PathVariable long compId) {
         log.info("Find compilation by id={}", compId);
         return compilationService.findCompilationById(compId);
     }

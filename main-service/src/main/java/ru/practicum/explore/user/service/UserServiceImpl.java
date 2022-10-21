@@ -23,6 +23,9 @@ import ru.practicum.explore.request.mapper.RequestMapper;
 import ru.practicum.explore.request.model.ParticipationRequest;
 import ru.practicum.explore.request.model.RequestStatus;
 import ru.practicum.explore.request.repository.ParticipationRequestRepository;
+import ru.practicum.explore.user.dto.NewUserRequest;
+import ru.practicum.explore.user.dto.UserDto;
+import ru.practicum.explore.user.mapper.UserMapper;
 import ru.practicum.explore.user.model.User;
 import ru.practicum.explore.user.repository.UserRepository;
 import ru.practicum.explore.validator.CommonValidator;
@@ -30,6 +33,7 @@ import ru.practicum.explore.validator.CommonValidator;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -43,6 +47,8 @@ class UserServiceImpl implements UserService {
     private final LocationService locationService;
     private final EventMapper eventMapper;
     private final RequestMapper requestMapper;
+
+    private final UserMapper userMapper;
     private final CommonValidator commonValidator;
     private static final String EVENT_INITIATOR_IS_WRONG = "Event initiator is wrong";
     private static final String AUTHOR_OF_COMMENT_IS_WRONG = "Author of comment is wrong";
@@ -230,5 +236,27 @@ class UserServiceImpl implements UserService {
         if (!Objects.equals(event.getInitiator().getId(), userId)) {
             throw new ForbiddenRequestException(EVENT_INITIATOR_IS_WRONG);
         }
+    }
+
+    @Override
+    public Collection<UserDto> findAllUsers(List<Long> ids, int from, int size) {
+        Pageable pageable = PageRequest.of(from / size, size);
+        Collection<UserDto> userDtoCollection = userRepository.findAllByIdOrderByIdDesc(ids, pageable).stream()
+                .map(userMapper::toUserDto)
+                .collect(Collectors.toList());
+        return userDtoCollection;
+    }
+
+    @Override
+    public UserDto postUser(NewUserRequest userRequest) {
+        User user = userMapper.toUser(userRequest);
+        UserDto userDto = userMapper.toUserDto(userRepository.save(user));
+        return userDto;
+    }
+
+    @Override
+    public void deleteUser(long userId) {
+        commonValidator.userValidator(userId);
+        userRepository.deleteById(userId);
     }
 }
