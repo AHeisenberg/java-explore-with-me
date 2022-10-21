@@ -1,4 +1,4 @@
-package ru.practicum.explore.location.model;
+package ru.practicum.explore.category.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,19 +7,21 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+/**
+ * Класс категории <b>id</b> и <b>name</b>.
+ *
+ * @version 1.1
+ * @autor Дмитрий Бармин
+ */
 @Entity
-@Table(name = "locations", schema = "public")
+@Table(name = "categories", schema = "public")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Location {
-
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private Float lat;
-
-    private Float lon;
+    private String name;
 }
