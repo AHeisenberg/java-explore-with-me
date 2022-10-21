@@ -16,9 +16,6 @@ public class BaseClient {
         this.rest = rest;
     }
 
-    /*
-    Метод формирования Get запроса на stat-service
-    */
     protected ResponseEntity<Object> get(String path, @Nullable Map<String, Object> parameters) {
         return makeAndSendRequest(HttpMethod.GET, path, parameters, null);
     }
