@@ -28,7 +28,7 @@ import ru.practicum.explore.user.dto.UserDto;
 import ru.practicum.explore.user.mapper.UserMapper;
 import ru.practicum.explore.user.model.User;
 import ru.practicum.explore.user.repository.UserRepository;
-import ru.practicum.explore.validator.ObjectValidate;
+import ru.practicum.explore.validator.CommonValidator;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -47,14 +47,14 @@ class UserServiceImpl implements UserService {
     private final LocationService locationService;
     private final ParticipationRequestRepository participationRequestRepository;
     private final CategoryRepository categoryRepository;
-    private ObjectValidate objectValidate;
+    private CommonValidator commonValidator;
 
     @Autowired
     public UserServiceImpl(UserMapper userMapper, EventMapper eventMapper, RequestMapper requestMapper,
                            UserRepository userRepository, EventRepository eventRepository,
                            LocationService locationService,
                            ParticipationRequestRepository participationRequestRepository,
-                           CategoryRepository categoryRepository, ObjectValidate objectValidate) {
+                           CategoryRepository categoryRepository, CommonValidator commonValidator) {
         this.userMapper = userMapper;
         this.eventMapper = eventMapper;
         this.requestMapper = requestMapper;
@@ -63,12 +63,12 @@ class UserServiceImpl implements UserService {
         this.locationService = locationService;
         this.participationRequestRepository = participationRequestRepository;
         this.categoryRepository = categoryRepository;
-        this.objectValidate = objectValidate;
+        this.commonValidator = commonValidator;
     }
 
     @Override
     public Collection<EventShortDto> findAllEventsByUserId(Long userId, Integer from, Integer size) {
-        objectValidate.validateUser(userId);
+        commonValidator.validateUser(userId);
         Pageable pageable = PageRequest.of(from / size, size);
         Collection<EventShortDto> listEventShort =
                 eventRepository.findAllByInitiatorId(userId, pageable).stream()
@@ -79,8 +79,8 @@ class UserServiceImpl implements UserService {
 
     @Override
     public EventFullDto patchEventByUser(Long userId, UpdateEventRequest updateEventRequest) {
-        objectValidate.validateUser(userId);
-        objectValidate.validateEvent(updateEventRequest.getEventId());
+        commonValidator.validateUser(userId);
+        commonValidator.validateEvent(updateEventRequest.getEventId());
         Event event = eventRepository.findById(updateEventRequest.getEventId()).get();
         if (!Objects.equals(event.getInitiator().getId(), userId)) {
             throw new ForbiddenRequestException(String.format("No event initiator"));
@@ -107,7 +107,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public EventFullDto postEvent(Long userId, NewEventDto newEventDto) {
-        objectValidate.validateUser(userId);
+        commonValidator.validateUser(userId);
         LocalDateTime eventDate = LocalDateTime.parse(newEventDto.getEventDate(),
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         if (!eventDate.isAfter(LocalDateTime.now().minusHours(2))) {
@@ -127,8 +127,8 @@ class UserServiceImpl implements UserService {
 
     @Override
     public EventFullDto findEventFull(Long userId, Long eventId) {
-        objectValidate.validateUser(userId);
-        objectValidate.validateEvent(eventId);
+        commonValidator.validateUser(userId);
+        commonValidator.validateEvent(eventId);
         Event event = eventRepository.findById(eventId).get();
         if (!Objects.equals(event.getInitiator().getId(), userId)) {
             throw new ForbiddenRequestException(String.format("Sorry you no Event initiator"));
@@ -138,8 +138,8 @@ class UserServiceImpl implements UserService {
 
     @Override
     public EventFullDto cancelEventByUser(Long userId, Long eventId) {
-        objectValidate.validateUser(userId);
-        objectValidate.validateEvent(eventId);
+        commonValidator.validateUser(userId);
+        commonValidator.validateEvent(eventId);
         Event event = eventRepository.findById(eventId).get();
         if (!Objects.equals(event.getInitiator().getId(), userId)) {
             throw new ForbiddenRequestException(String.format("Sorry you no Event initiator"));
@@ -153,8 +153,8 @@ class UserServiceImpl implements UserService {
 
     @Override
     public Collection<ParticipationRequestDto> findRequestByUser(Long userId, Long eventId) {
-        objectValidate.validateUser(userId);
-        objectValidate.validateEvent(eventId);
+        commonValidator.validateUser(userId);
+        commonValidator.validateEvent(eventId);
         Event event = eventRepository.findById(eventId).get();
         if (!Objects.equals(event.getInitiator().getId(), userId)) {
             throw new ForbiddenRequestException(String.format("Sorry you no Event initiator"));
@@ -168,9 +168,9 @@ class UserServiceImpl implements UserService {
 
     @Override
     public ParticipationRequestDto approveConfirmUserByEvent(Long userId, Long eventId, Long reqId) {
-        objectValidate.validateUser(userId);
-        objectValidate.validateEvent(eventId);
-        objectValidate.validateRequest(reqId);
+        commonValidator.validateUser(userId);
+        commonValidator.validateEvent(eventId);
+        commonValidator.validateRequest(reqId);
         Event event = eventRepository.findById(eventId).get();
         if (!Objects.equals(event.getInitiator().getId(), userId)) {
             throw new ForbiddenRequestException(String.format("Sorry you no Event initiator"));
@@ -187,9 +187,9 @@ class UserServiceImpl implements UserService {
 
     @Override
     public ParticipationRequestDto approveRejectUserByEvent(Long userId, Long eventId, Long reqId) {
-        objectValidate.validateUser(userId);
-        objectValidate.validateEvent(eventId);
-        objectValidate.validateRequest(reqId);
+        commonValidator.validateUser(userId);
+        commonValidator.validateEvent(eventId);
+        commonValidator.validateRequest(reqId);
         Event event = eventRepository.findById(eventId).get();
         if (!Objects.equals(event.getInitiator().getId(), userId)) {
             return null;
@@ -201,7 +201,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public Collection<ParticipationRequestDto> findRequestsByUser(Long userId) {
-        objectValidate.validateUser(userId);
+        commonValidator.validateUser(userId);
         Collection<ParticipationRequestDto> listRequests =
                 participationRequestRepository.findAllByRequester_IdOrderById(userId).stream()
                         .map(requestMapper::toParticipationRequestDto)
@@ -211,8 +211,8 @@ class UserServiceImpl implements UserService {
 
     @Override
     public ParticipationRequestDto postRequestUser(Long userId, Long eventId) {
-        objectValidate.validateUser(userId);
-        objectValidate.validateEvent(eventId);
+        commonValidator.validateUser(userId);
+        commonValidator.validateEvent(eventId);
         if (Objects.equals(eventRepository.findById(eventId).get().getInitiator().getId(), userId)) {
             throw new ForbiddenRequestException(String.format("Sorry you no Event initiator"));
         }
@@ -241,8 +241,8 @@ class UserServiceImpl implements UserService {
 
     @Override
     public ParticipationRequestDto cancelRequestByUser(Long userId, Long requestId) {
-        objectValidate.validateUser(userId);
-        objectValidate.validateRequest(requestId);
+        commonValidator.validateUser(userId);
+        commonValidator.validateRequest(requestId);
         if (!Objects.equals(participationRequestRepository.findById(requestId).get().getRequester().getId(), userId)) {
             throw new ForbiddenRequestException(String.format("Sorry you no Event initiator"));
         }
@@ -269,7 +269,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long userId) {
-        objectValidate.validateUser(userId);
+        commonValidator.validateUser(userId);
         userRepository.deleteById(userId);
     }
 }

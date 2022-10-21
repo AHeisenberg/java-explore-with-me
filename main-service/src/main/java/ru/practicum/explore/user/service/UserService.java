@@ -35,18 +35,9 @@ public interface UserService {
 
     ParticipationRequestDto cancelRequestByUser(Long userId, Long requestId);
 
-    /*
-Метод контроллера для получения все пользователей админом
-*/
     Collection<UserDto> findAllUsers(List<Long> ids, Integer from, Integer size);
 
-    /*
-    Метод контроллера для добавления нового пользователя админом
-    */
     UserDto postUser(NewUserRequest newUserRequest);
 
-    /*
-    Метод контроллера для удаления пользователя админом
-    */
     void deleteUser(Long userId);
 }

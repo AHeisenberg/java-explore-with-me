@@ -13,7 +13,7 @@ import ru.practicum.explore.event.dto.EventShortDto;
 import ru.practicum.explore.event.mapper.EventMapper;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.repository.EventRepository;
-import ru.practicum.explore.validator.ObjectValidate;
+import ru.practicum.explore.validator.CommonValidator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,12 +27,12 @@ public class CompilationServiceImpl implements CompilationService {
     private final CompilationRepository compilationRepository;
     private final CompilationMapper compilationMapper;
     private final EventMapper eventMapper;
-    private final ObjectValidate objectValidate;
+    private final CommonValidator commonValidator;
     private final EventRepository eventRepository;
 
     @Override
     public void pinCompilation(Long compId) {
-        objectValidate.validateCompilation(compId);
+        commonValidator.validateCompilation(compId);
         Compilation compilation = compilationRepository.findById(compId).get();
         compilation.setPinned(true);
         compilationRepository.save(compilation);
@@ -40,7 +40,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public void unpinCompilation(Long compId) {
-        objectValidate.validateCompilation(compId);
+        commonValidator.validateCompilation(compId);
         Compilation compilation = compilationRepository.findById(compId).get();
         compilation.setPinned(false);
         compilationRepository.save(compilation);
@@ -68,7 +68,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public Optional<CompilationDto> findCompilationById(Long compId) {
-        objectValidate.validateCompilation(compId);
+        commonValidator.validateCompilation(compId);
         Compilation compilation = compilationRepository.findById(compId).get();
         List<EventShortDto> eventShortDtoList = new ArrayList<>();
         if (compilation.getEvents().size() != 0) {
@@ -92,14 +92,14 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public void deleteCompilation(Long compId) {
-        objectValidate.validateCompilation(compId);
+        commonValidator.validateCompilation(compId);
         compilationRepository.deleteById(compId);
     }
 
     @Override
     public void deleteEventInCompilation(Long compId, Long eventId) {
-        objectValidate.validateCompilation(compId);
-        objectValidate.validateEvent(eventId);
+        commonValidator.validateCompilation(compId);
+        commonValidator.validateEvent(eventId);
         Compilation compilation = compilationRepository.findById(compId).get();
         Event event = eventRepository.findById(eventId).get();
         if (!compilation.getEvents().contains(event)) {
@@ -111,8 +111,8 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public void addEventInCompilation(Long compId, Long eventId) {
-        objectValidate.validateCompilation(compId);
-        objectValidate.validateEvent(eventId);
+        commonValidator.validateCompilation(compId);
+        commonValidator.validateEvent(eventId);
         Compilation compilation = compilationRepository.findById(compId).get();
         Event event = eventRepository.findById(eventId).get();
         if (compilation.getEvents().contains(event)) {

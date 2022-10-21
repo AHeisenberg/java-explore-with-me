@@ -11,7 +11,7 @@ import ru.practicum.explore.event.dto.EventShortDto;
 import ru.practicum.explore.event.mapper.EventMapper;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.repository.EventRepository;
-import ru.practicum.explore.validator.ObjectValidate;
+import ru.practicum.explore.validator.CommonValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -26,7 +26,7 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
     private final StatsClient statsClient;
-    private final ObjectValidate objectValidate;
+    private final CommonValidator commonValidator;
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -55,7 +55,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Optional<EventFullDto> findEventById(Long id) {
-        objectValidate.validateEvent(id);
+        commonValidator.validateEvent(id);
         Event event = eventRepository.findById(id).get();
         EventFullDto eventFullDto = eventMapper.toEventFullDto(event);
         return Optional.of(eventFullDto);

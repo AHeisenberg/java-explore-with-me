@@ -14,7 +14,7 @@ import ru.practicum.explore.event.model.EventStatus;
 import ru.practicum.explore.event.repository.EventRepository;
 import ru.practicum.explore.exc.ForbiddenRequestException;
 import ru.practicum.explore.exc.ObjectNotFoundException;
-import ru.practicum.explore.validator.ObjectValidate;
+import ru.practicum.explore.validator.CommonValidator;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -29,7 +29,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     private final CategoryRepository categoryRepository;
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
-    private final ObjectValidate objectValidate;
+    private final CommonValidator commonValidator;
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -50,7 +50,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     @Override
     public EventFullDto putEvent(Long eventId, AdminUpdateEventRequest adminUpdateEventRequest) {
-        objectValidate.validateEvent(eventId);
+        commonValidator.validateEvent(eventId);
         LocalDateTime eventDate = LocalDateTime.parse(adminUpdateEventRequest.getEventDate(), FORMATTER);
         if (!eventDate.isAfter(LocalDateTime.now().minusHours(2))) {
             throw new ForbiddenRequestException(String.format("Bad date."));
@@ -71,7 +71,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     @Override
     public EventFullDto approvePublishEvent(Long eventId) {
-        objectValidate.validateEvent(eventId);
+        commonValidator.validateEvent(eventId);
         Event event = eventRepository.findById(eventId).get();
         event.setState(EventStatus.PUBLISHED);
         eventRepository.save(event);
@@ -80,7 +80,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     @Override
     public EventFullDto approveRejectEvent(Long eventId) {
-        objectValidate.validateEvent(eventId);
+        commonValidator.validateEvent(eventId);
         Event event = eventRepository.findById(eventId).get();
         event.setState(EventStatus.CANCELED);
         eventRepository.save(event);

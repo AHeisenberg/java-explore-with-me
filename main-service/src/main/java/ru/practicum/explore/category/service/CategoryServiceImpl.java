@@ -11,7 +11,7 @@ import ru.practicum.explore.category.mapper.CategoryMapper;
 import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.category.repository.CategoryRepository;
 import ru.practicum.explore.exc.ForbiddenRequestException;
-import ru.practicum.explore.validator.ObjectValidate;
+import ru.practicum.explore.validator.CommonValidator;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
-    private final ObjectValidate objectValidate;
+    private final CommonValidator commonValidator;
 
     @Override
     public Collection<CategoryDto> findAll(Integer from, Integer size) {
@@ -36,14 +36,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Optional<CategoryDto> findCategoryById(Long catId) {
-        objectValidate.validateCategory(catId);
+        commonValidator.validateCategory(catId);
         Category category = categoryRepository.findById(catId).get();
         return Optional.of(categoryMapper.toCategoryDto(category));
     }
 
     @Override
     public CategoryDto patchCategory(CategoryDto categoryDto) {
-        objectValidate.validateCategory(categoryDto.getId());
+        commonValidator.validateCategory(categoryDto.getId());
         if (categoryRepository.findFirstByName(categoryDto.getName()).isPresent()) {
             throw new ForbiddenRequestException(String.format("Bad name"));
         }
@@ -61,7 +61,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteCategory(Long catId) {
-        objectValidate.validateCategory(catId);
+        commonValidator.validateCategory(catId);
         categoryRepository.deleteById(catId);
     }
 }
