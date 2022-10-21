@@ -1,14 +1,20 @@
 package ru.practicum.explore.request.mapper;
 
+import org.springframework.stereotype.Component;
 import ru.practicum.explore.request.dto.ParticipationRequestDto;
 import ru.practicum.explore.request.model.ParticipationRequest;
 
-/**
- * Интерфейс маппера Запросов на участие в событие
- */
-public interface RequestMapper {
-    /*
-    Метод маппера для получения dto запроса из модели запроса на участие в событие
-    */
-    ParticipationRequestDto toParticipationRequestDto(ParticipationRequest participationRequest);
+import java.time.format.DateTimeFormatter;
+
+@Component
+public class RequestMapper {
+    public ParticipationRequestDto toParticipationRequestDto(ParticipationRequest participationRequest) {
+        return ParticipationRequestDto.builder()
+                .id(participationRequest.getId())
+                .created(participationRequest.getCreated().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .event(participationRequest.getEvent().getId())
+                .requester(participationRequest.getRequester().getId())
+                .status(participationRequest.getStatus().toString())
+                .build();
+    }
 }
