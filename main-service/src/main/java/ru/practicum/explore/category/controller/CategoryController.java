@@ -9,9 +9,6 @@ import ru.practicum.explore.category.service.CategoryService;
 import java.util.Collection;
 import java.util.Optional;
 
-/**
- * Публичный API для работы с категориями
- */
 @RestController
 @RequestMapping("/categories")
 @Slf4j
@@ -23,9 +20,6 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    /*
-    Публичный метод контроллера для получения всех категорий
-    */
     @GetMapping
     public Collection<CategoryDto> findAll(@RequestParam(defaultValue = "0") Integer from,
                                            @RequestParam(defaultValue = "10") Integer size) {
@@ -33,9 +27,6 @@ public class CategoryController {
         return categoryService.findAll(from, size);
     }
 
-    /*
-    Публичный метод контроллера для получения категории по id
-    */
     @GetMapping("/{catId}")
     public Optional<CategoryDto> getCategoryById(@PathVariable Long catId) {
         log.info("Get Category id={}", catId);

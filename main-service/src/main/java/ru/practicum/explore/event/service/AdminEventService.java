@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface AdminEventService {
 
-    Collection<EventFullDto> getAllEvents(Map<String, Object> parameters);
+    Collection<EventFullDto> findAllEvents(Map<String, Object> parameters);
 
     EventFullDto putEvent(Long eventId, AdminUpdateEventRequest adminUpdateEventRequest);
 

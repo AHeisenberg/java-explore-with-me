@@ -73,7 +73,7 @@ public interface UserService {
     /*
 Метод контроллера для получения все пользователей админом
 */
-    Collection<UserDto> getAllUsers(List<Long> ids, Integer from, Integer size);
+    Collection<UserDto> findAllUsers(List<Long> ids, Integer from, Integer size);
 
     /*
     Метод контроллера для добавления нового пользователя админом

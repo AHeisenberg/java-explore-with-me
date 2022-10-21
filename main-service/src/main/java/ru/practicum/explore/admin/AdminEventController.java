@@ -20,15 +20,14 @@ public class AdminEventController {
 
     private final AdminEventService adminEventService;
 
-
     @GetMapping
-    public Collection<EventFullDto> getAllEvents(@RequestParam List<Long> users,
-                                                 @RequestParam List<EventStatus> states,
-                                                 @RequestParam List<Long> categories,
-                                                 @RequestParam String rangeStart,
-                                                 @RequestParam String rangeEnd,
-                                                 @RequestParam(defaultValue = "0") Integer from,
-                                                 @RequestParam(defaultValue = "10") Integer size) {
+    public Collection<EventFullDto> findAllEvents(@RequestParam List<Long> users,
+                                                  @RequestParam List<EventStatus> states,
+                                                  @RequestParam List<Long> categories,
+                                                  @RequestParam String rangeStart,
+                                                  @RequestParam String rangeEnd,
+                                                  @RequestParam(defaultValue = "0") Integer from,
+                                                  @RequestParam(defaultValue = "10") Integer size) {
         Map<String, Object> parameters = Map.of(
                 "users", users,
                 "states", states,
@@ -38,26 +37,26 @@ public class AdminEventController {
                 "from", from,
                 "size", size
         );
-        log.info("Admin Get events by parameters {}", parameters);
-        return adminEventService.getAllEvents(parameters);
+        log.info("Admin find events by parameters {}", parameters);
+        return adminEventService.findAllEvents(parameters);
     }
 
     @PutMapping("/{eventId}")
     public EventFullDto putEvent(@PathVariable Long eventId,
                                  @RequestBody AdminUpdateEventRequest adminUpdateEventRequest) {
-        log.info("Admin Put eventid={}", eventId);
+        log.info("Admin Put event id={}", eventId);
         return adminEventService.putEvent(eventId, adminUpdateEventRequest);
     }
 
     @PatchMapping("/{eventId}/publish")
     public EventFullDto approvePublishEvent(@PathVariable Long eventId) {
-        log.info("Admin approve publish eventId={}", eventId);
+        log.info("Admin approve publish event id={}", eventId);
         return adminEventService.approvePublishEvent(eventId);
     }
 
     @PatchMapping("/{eventId}/reject")
     public EventFullDto approveRejectEvent(@PathVariable Long eventId) {
-        log.info("Admin approve reject eventId={}", eventId);
+        log.info("Admin approve reject event id={}", eventId);
         return adminEventService.approveRejectEvent(eventId);
     }
 

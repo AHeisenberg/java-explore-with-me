@@ -19,11 +19,11 @@ public class AdminUserController {
     private final UserService userService;
 
     @GetMapping
-    public Collection<UserDto> getAllUsers(@RequestParam List<Long> ids,
-                                           @RequestParam(defaultValue = "0") Integer from,
-                                           @RequestParam(defaultValue = "10") Integer size) {
+    public Collection<UserDto> findAllUsers(@RequestParam List<Long> ids,
+                                            @RequestParam(defaultValue = "0") Integer from,
+                                            @RequestParam(defaultValue = "10") Integer size) {
         log.info("Admin get all users");
-        return userService.getAllUsers(ids, from, size);
+        return userService.findAllUsers(ids, from, size);
     }
 
     @PostMapping

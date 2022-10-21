@@ -33,7 +33,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
 
     @Override
-    public Collection<EventFullDto> getAllEvents(Map<String, Object> parameters) {
+    public Collection<EventFullDto> findAllEvents(Map<String, Object> parameters) {
         Pageable pageable = PageRequest.of((Integer) parameters.get("from") / (Integer) parameters.get("size"),
                 (Integer) parameters.get("size"));
         List<Long> users = (List<Long>) parameters.get("users");
