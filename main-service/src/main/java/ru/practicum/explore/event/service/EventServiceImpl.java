@@ -11,7 +11,6 @@ import ru.practicum.explore.event.dto.EventShortDto;
 import ru.practicum.explore.event.mapper.EventMapper;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.event.repository.EventRepository;
-import ru.practicum.explore.request.repository.ParticipationRequestRepository;
 import ru.practicum.explore.validator.ObjectValidate;
 
 import javax.servlet.http.HttpServletRequest;

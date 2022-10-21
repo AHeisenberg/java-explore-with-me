@@ -5,23 +5,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.explore.exc.ApiError;
-import ru.practicum.explore.exc.ForbiddenRequestException;
-import ru.practicum.explore.exc.ObjectNotFoundException;
 
 import java.time.LocalDateTime;
 
-/**
- * Обработка ошибок
- */
 @RestControllerAdvice
-public class ExceptionHandlers {
+public class ErrorHandler {
     @ExceptionHandler(ObjectNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError notFound(RuntimeException e) {
         return ApiError.builder()
                 .message(e.getLocalizedMessage())
-                .reason("The required object was not found.")
+                .reason("Object was not found.")
                 .status(String.valueOf(HttpStatus.NOT_FOUND))
                 .timestamp(LocalDateTime.now())
                 .build();
@@ -32,7 +26,7 @@ public class ExceptionHandlers {
     public ApiError forbidden(RuntimeException e) {
         return ApiError.builder()
                 .message(e.getLocalizedMessage())
-                .reason("For the requested operation the conditions are not met.")
+                .reason("For requested operation conditions are not met.")
                 .status(String.valueOf(HttpStatus.FORBIDDEN))
                 .timestamp(LocalDateTime.now())
                 .build();
