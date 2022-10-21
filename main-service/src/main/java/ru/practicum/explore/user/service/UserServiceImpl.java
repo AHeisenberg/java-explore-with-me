@@ -71,7 +71,7 @@ class UserServiceImpl implements UserService {
         objectValidate.validateUser(userId);
         Pageable pageable = PageRequest.of(from / size, size);
         Collection<EventShortDto> listEventShort =
-                eventRepository.findAllByInitiator_IdOrderById(userId, pageable).stream()
+                eventRepository.findAllByInitiatorId(userId, pageable).stream()
                         .map(eventMapper::toEventShortDto)
                         .collect(Collectors.toList());
         return listEventShort;

@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
 
-    List<Event> findAllByInitiator_IdOrderById(Long userId, Pageable pageable);
+    List<Event> findAllByInitiatorId(Long userId, Pageable pageable);
 
     @Query("select e from Event e " +
             "where ((e.annotation LIKE %?1%)" +
@@ -21,8 +21,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "AND e.eventDate>=?4 " +
             "AND e.eventDate<=?5 " +
             "order by e.id")
-    List<Event> getAllEventsByParameters(String text, List<Long> catIds, Boolean paid,
-                                         LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable);
+    List<Event> findAllEventsByParameters(String text, List<Long> catIds, Boolean paid,
+                                          LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable);
 
     @Query("select e from Event e " +
             "where e.initiator.id IN ?1 " +
@@ -31,6 +31,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "AND e.eventDate>=?4 " +
             "AND e.eventDate<=?5 " +
             "order by e.id")
-    List<Event> getAllEvents(List<Long> users, List<EventStatus> states, List<Long> categories,
-                             LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable);
+    List<Event> findAllEvents(List<Long> users, List<EventStatus> states, List<Long> categories,
+                              LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable);
 }

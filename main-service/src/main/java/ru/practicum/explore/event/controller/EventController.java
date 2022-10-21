@@ -43,14 +43,14 @@ public class EventController {
                 "size", size
         );
         log.info("Find all events by parameters {}", parameters);
-        eventService.saveInStatService(request);
+        eventService.saveHitInStatsService(request);
         return eventService.findAllEvents(parameters);
     }
 
     @GetMapping("/{id}")
     public Optional<EventFullDto> findEventById(@PathVariable Long id, HttpServletRequest request) {
-        eventService.saveInStatService(request);
+        eventService.saveHitInStatsService(request);
         log.info("Find event by id={}", id);
-        return eventService.getEvent(id);
+        return eventService.findEventById(id);
     }
 }

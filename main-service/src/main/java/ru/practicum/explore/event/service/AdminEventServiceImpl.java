@@ -31,6 +31,8 @@ public class AdminEventServiceImpl implements AdminEventService {
     private final EventMapper eventMapper;
     private final ObjectValidate objectValidate;
 
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
 
     @Override
     public Collection<EventFullDto> findAllEvents(Map<String, Object> parameters) {
@@ -39,28 +41,23 @@ public class AdminEventServiceImpl implements AdminEventService {
         List<Long> users = (List<Long>) parameters.get("users");
         List<EventStatus> states = (List<EventStatus>) parameters.get("states");
         List<Long> catIds = (List<Long>) parameters.get("categories");
-        LocalDateTime rangeStart = LocalDateTime.parse((String) parameters.get("rangeStart"),
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        LocalDateTime rangeEnd = LocalDateTime.parse((String) parameters.get("rangeEnd"),
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        Collection<EventFullDto> fullDtoCollection =
-                eventRepository.getAllEvents(users, states, catIds, rangeStart, rangeEnd, pageable).stream()
-                        .map(eventMapper::toEventFullDto)
-                        .collect(Collectors.toList());
-        return fullDtoCollection;
+        LocalDateTime rangeStart = LocalDateTime.parse((String) parameters.get("rangeStart"), FORMATTER);
+        LocalDateTime rangeEnd = LocalDateTime.parse((String) parameters.get("rangeEnd"), FORMATTER);
+        return eventRepository.findAllEvents(users, states, catIds, rangeStart, rangeEnd, pageable).stream()
+                .map(eventMapper::toEventFullDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public EventFullDto putEvent(Long eventId, AdminUpdateEventRequest adminUpdateEventRequest) {
         objectValidate.validateEvent(eventId);
-        LocalDateTime eventDate = LocalDateTime.parse(adminUpdateEventRequest.getEventDate(),
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        LocalDateTime eventDate = LocalDateTime.parse(adminUpdateEventRequest.getEventDate(), FORMATTER);
         if (!eventDate.isAfter(LocalDateTime.now().minusHours(2))) {
             throw new ForbiddenRequestException(String.format("Bad date."));
         }
         Event event = eventRepository.findById(eventId).get();
         if (adminUpdateEventRequest.getCategory() != null) {
-            if (!categoryRepository.findById(Long.valueOf(adminUpdateEventRequest.getCategory())).isPresent()) {
+            if (categoryRepository.findById(Long.valueOf(adminUpdateEventRequest.getCategory())).isEmpty()) {
                 throw new ObjectNotFoundException(String.format("Category not found."));
             }
             Category category = categoryRepository.findById(Long.valueOf(adminUpdateEventRequest.getCategory())).get();
