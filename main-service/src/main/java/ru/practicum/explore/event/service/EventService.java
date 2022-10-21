@@ -8,14 +8,11 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * Интерфейс сервиса события
- */
 public interface EventService {
     /*
     Получение событий с возможностью фильтрации
     */
-    Collection<EventShortDto> getAll(Map<String, Object> parameters);
+    Collection<EventShortDto> findAllEvents(Map<String, Object> parameters);
 
     /*
     Получение подробной информации об опубликованном событии по его идентификатору

@@ -9,13 +9,10 @@ import ru.practicum.explore.event.model.EventStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Интерфейс репозитория событий
- */
 public interface EventRepository extends JpaRepository<Event, Long> {
-    /*
-    Публичный метод получения всех событий по параметрам
-    */
+
+    List<Event> findAllByInitiator_IdOrderById(Long userId, Pageable pageable);
+
     @Query("select e from Event e " +
             "where ((e.annotation LIKE %?1%)" +
             "OR (e.description LIKE %?1%)) " +
@@ -27,14 +24,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> getAllEventsByParameters(String text, List<Long> catIds, Boolean paid,
                                          LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable);
 
-    /*
-    Метод  получения всех событий пользователем по id
-    */
-    List<Event> findAllByInitiator_IdOrderById(Long userId, Pageable pageable);
-
-    /*
-    Метод контроллера для получения админом всех событий по параметрам
-    */
     @Query("select e from Event e " +
             "where e.initiator.id IN ?1 " +
             "AND e.state IN ?2 " +

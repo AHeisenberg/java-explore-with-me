@@ -43,7 +43,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Collection<EventShortDto> getAll(Map<String, Object> parameters) {
+    public Collection<EventShortDto> findAllEvents(Map<String, Object> parameters) {
         Pageable pageable = PageRequest.of((Integer) parameters.get("from") / (Integer) parameters.get("size"),
                 (Integer) parameters.get("size"));
         String text = (String) parameters.get("text");
