@@ -7,11 +7,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.category.dto.CategoryDto;
 import ru.practicum.explore.category.dto.NewCategoryDto;
-import ru.practicum.explore.exc.ForbiddenRequestException;
-import ru.practicum.explore.validator.ObjectValidate;
 import ru.practicum.explore.category.mapper.CategoryMapper;
 import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.category.repository.CategoryRepository;
+import ru.practicum.explore.exc.ForbiddenRequestException;
+import ru.practicum.explore.validator.ObjectValidate;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -42,7 +42,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Optional<CategoryDto> getCategoryById(Long catId) {
+    public Optional<CategoryDto> findCategoryById(Long catId) {
         objectValidate.validateCategory(catId);
         Category category = categoryRepository.findById(catId).get();
         return Optional.of(categoryMapper.toCategoryDto(category));

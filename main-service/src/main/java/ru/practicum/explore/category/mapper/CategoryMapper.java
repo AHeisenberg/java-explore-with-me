@@ -1,26 +1,31 @@
 package ru.practicum.explore.category.mapper;
 
-
+import org.springframework.stereotype.Component;
 import ru.practicum.explore.category.dto.CategoryDto;
 import ru.practicum.explore.category.dto.NewCategoryDto;
 import ru.practicum.explore.category.model.Category;
 
-/**
- * Интерфейс маппер категорий
- */
-public interface CategoryMapper {
-    /*
-    метод маппера из котегории в dto категории
-    */
-    CategoryDto toCategoryDto(Category category);
+@Component
+public class CategoryMapper {
+    public CategoryDto toCategoryDto(Category category) {
+        return CategoryDto.builder()
+                .id(category.getId())
+                .name(category.getName())
+                .build();
+    }
 
-    /*
-    Метод маппера из dto новой категории в категорию
-    */
-    Category toCategory(NewCategoryDto newCategoryDto);
+    public Category toCategory(NewCategoryDto newCategoryDto) {
+        return Category.builder()
+                .name(newCategoryDto.getName())
+                .build();
+    }
 
-    /*
-    Метод маппера по обновлению категорий
-    */
-    void updateCategoryFromCategoryDto(CategoryDto categoryDto, Category category);
+    public void updateCategoryFromCategoryDto(CategoryDto categoryDto, Category category) {
+        if (categoryDto.getId() != null) {
+            category.setId(category.getId());
+        }
+        if (categoryDto.getName() != null) {
+            category.setName(categoryDto.getName());
+        }
+    }
 }

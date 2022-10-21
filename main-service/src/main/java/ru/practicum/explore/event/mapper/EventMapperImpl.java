@@ -2,16 +2,16 @@ package ru.practicum.explore.event.mapper;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import ru.practicum.explore.category.mapper.CategoryMapper;
+import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.clients.stat.StatClient;
 import ru.practicum.explore.event.dto.*;
-import ru.practicum.explore.category.mapper.CategoryMapper;
-import ru.practicum.explore.user.mapper.UserMapper;
-import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.location.model.Location;
-import ru.practicum.explore.user.model.User;
-import ru.practicum.explore.request.repository.ParticipationRequestRepository;
 import ru.practicum.explore.request.model.RequestStatus;
+import ru.practicum.explore.request.repository.ParticipationRequestRepository;
+import ru.practicum.explore.user.mapper.UserMapper;
+import ru.practicum.explore.user.model.User;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

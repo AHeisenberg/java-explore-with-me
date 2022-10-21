@@ -18,7 +18,7 @@ public interface CategoryService {
     /*
     Публичный метод контроллера для получения категории по id
     */
-    Optional<CategoryDto> getCategoryById(Long catId);
+    Optional<CategoryDto> findCategoryById(Long catId);
 
     /*
 Метод контроллера для обновления категории админом
