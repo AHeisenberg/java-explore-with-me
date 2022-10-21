@@ -4,13 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.practicum.explore.errors.validate.ObjectValidate;
 import ru.practicum.explore.dto.compilation.CompilationDto;
+import ru.practicum.explore.dto.event.EventShortDto;
+import ru.practicum.explore.errors.validate.ObjectValidate;
 import ru.practicum.explore.mappers.compilation.CompilationMapper;
+import ru.practicum.explore.mappers.event.EventMapper;
 import ru.practicum.explore.models.compilation.Compilation;
 import ru.practicum.explore.repositories.compilation.CompilationRepository;
-import ru.practicum.explore.dto.event.EventShortDto;
-import ru.practicum.explore.mappers.event.EventMapper;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -5,12 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.dto.category.CategoryDto;
 import ru.practicum.explore.dto.category.NewCategoryDto;
+import ru.practicum.explore.dto.compilation.CompilationDto;
+import ru.practicum.explore.dto.compilation.NewCompilationDto;
 import ru.practicum.explore.dto.event.AdminUpdateEventRequest;
 import ru.practicum.explore.dto.event.EventFullDto;
 import ru.practicum.explore.dto.user.NewUserRequest;
 import ru.practicum.explore.dto.user.UserDto;
-import ru.practicum.explore.dto.compilation.CompilationDto;
-import ru.practicum.explore.dto.compilation.NewCompilationDto;
 import ru.practicum.explore.services.privateApi.admin.AdminService;
 import ru.practicum.explore.statuses.event.Status;
 

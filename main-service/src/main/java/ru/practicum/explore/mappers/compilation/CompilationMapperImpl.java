@@ -3,8 +3,8 @@ package ru.practicum.explore.mappers.compilation;
 import org.springframework.stereotype.Component;
 import ru.practicum.explore.dto.compilation.CompilationDto;
 import ru.practicum.explore.dto.compilation.NewCompilationDto;
-import ru.practicum.explore.models.compilation.Compilation;
 import ru.practicum.explore.dto.event.EventShortDto;
+import ru.practicum.explore.models.compilation.Compilation;
 import ru.practicum.explore.models.event.Event;
 
 import java.util.List;
