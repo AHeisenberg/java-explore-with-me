@@ -1,44 +1,27 @@
 package ru.practicum.explore.mapper;
 
-import org.springframework.stereotype.Component;
 import ru.practicum.explore.dto.EndpointHit;
 import ru.practicum.explore.dto.ViewStats;
 import ru.practicum.explore.model.Hit;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-@Component
-public class HitMapper {
+/**
+ * Интерфейс маппера статистики
+ */
+public interface HitMapper {
+    /*
+    Метод маппера для получения модели
+    */
+    Hit toHit(EndpointHit endpointHit);
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    /*
+    Метод маппера для получения из модели в dto
+    */
+    EndpointHit toEndpointHit(Hit hit);
 
-    public Hit toHit(EndpointHit endpointHit) {
-        return Hit.builder()
-                .id(endpointHit.getId())
-                .app(endpointHit.getApp())
-                .uri(endpointHit.getUri())
-                .ip(endpointHit.getIp())
-                .timestamp(LocalDateTime.parse(endpointHit.getTimestamp(), FORMATTER))
-                .build();
-    }
-
-    public EndpointHit toEndpointHit(Hit hit) {
-        return EndpointHit.builder()
-                .id(hit.getId())
-                .app(hit.getApp())
-                .uri(hit.getUri())
-                .ip(hit.getIp())
-                .timestamp(hit.getTimestamp().format(FORMATTER))
-                .build();
-    }
-
-    public ViewStats toViewStats(List<Hit> list) {
-        return list.isEmpty() ? null : ViewStats.builder()
-                .app(list.get(0).getApp())
-                .uri(list.get(0).getUri())
-                .hits(list.size())
-                .build();
-    }
+    /*
+    Метод маппера получения статистики
+    */
+    ViewStats toViewStats(List<Hit> list);
 }

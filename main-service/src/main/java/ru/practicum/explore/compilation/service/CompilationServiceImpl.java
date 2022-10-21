@@ -32,30 +32,50 @@ public class CompilationServiceImpl implements CompilationService {
     private final EventMapper eventMapper;
     private final CommonValidator commonValidator;
 
+//    @Override
+//    public Collection<CompilationDto> findAllCompilations(Boolean pinned, int from, int size) {
+//        Pageable pageable = PageRequest.of(from, size);
+//        boolean compilationsExist = !compilationRepository.findAll().isEmpty();
+//        Collection<Compilation> compilationCollection = compilationRepository.findAllByPinned(pinned, pageable);
+//        Collection<CompilationDto> compilationDtoCollection = new ArrayList<>();
+//
+//        for (Compilation c : compilationCollection) {
+//            List<EventShortDto> eventShortDtoList = new ArrayList<>();
+//            if (c.getEvents().size() != 0) {
+//                eventShortDtoList = c.getEvents().stream()
+//                        .map(eventMapper::toEventShortDto)
+//                        .collect(Collectors.toList());
+//            }
+//            compilationDtoCollection.add(compilationMapper.toCompilationDto(c, eventShortDtoList));
+//        }
+//
+//        if (compilationCollection.isEmpty()) {
+//            log.info("Compilations not exist");
+//            return compilationDtoCollection;
+//        } else {
+//
+//        }
+//       log.info("Find all compilations");
+//        return compilationDtoCollection;
+//    }
+
     @Override
     public Collection<CompilationDto> findAllCompilations(Boolean pinned, int from, int size) {
-        Pageable pageable = PageRequest.of(from, size);
-        boolean compilationsExist = !compilationRepository.findAll().isEmpty();
-        Collection<Compilation> compilationCollection = compilationRepository.findAllByPinned(pinned, pageable);
+        Pageable pageable = PageRequest.of(from / size, size);
+        Collection<Compilation> compilationCollection =
+                compilationRepository.findAllByPinned(pinned, pageable);
         Collection<CompilationDto> compilationDtoCollection = new ArrayList<>();
-
-        for (Compilation c : compilationCollection) {
-            List<EventShortDto> eventShortDtoList = new ArrayList<>();
-            if (c.getEvents().size() != 0) {
-                eventShortDtoList = c.getEvents().stream()
-                        .map(eventMapper::toEventShortDto)
-                        .collect(Collectors.toList());
+        if (!compilationCollection.isEmpty()) {
+            for (Compilation c : compilationCollection) {
+                List<EventShortDto> eventShortDtoList = new ArrayList<>();
+                if (c.getEvents().size() != 0) {
+                    eventShortDtoList = c.getEvents().stream()
+                            .map(eventMapper::toEventShortDto)
+                            .collect(Collectors.toList());
+                }
+                compilationDtoCollection.add(compilationMapper.toCompilationDto(c, eventShortDtoList));
             }
-            compilationDtoCollection.add(compilationMapper.toCompilationDto(c, eventShortDtoList));
         }
-
-        if (compilationCollection.isEmpty()) {
-            log.info("Compilations not exist");
-            return compilationDtoCollection;
-        } else {
-
-        }
-       log.info("Find all compilations");
         return compilationDtoCollection;
     }
 

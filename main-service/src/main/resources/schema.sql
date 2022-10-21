@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS users,categories,locations,events,compilations,compilation_event,requests,comments;
+DROP TABLE IF EXISTS users,categories,locations,events,compilations,event_compilation,requests;
 
 CREATE TABLE IF NOT EXISTS users
 (
@@ -45,8 +45,7 @@ CREATE TABLE IF NOT EXISTS compilations
     title  VARCHAR(512)
 );
 
-
-CREATE TABLE IF NOT EXISTS compilation_event
+CREATE TABLE IF NOT EXISTS event_compilation
 (
     event_id       BIGINT REFERENCES events (id) ON DELETE CASCADE,
     compilation_id BIGINT REFERENCES compilations (id) ON DELETE CASCADE
@@ -59,4 +58,4 @@ CREATE TABLE IF NOT EXISTS requests
     event_id     BIGINT REFERENCES events (id) ON DELETE CASCADE,
     requester_id BIGINT REFERENCES users (id) ON DELETE CASCADE,
     status       VARCHAR(32)
-);
+)
