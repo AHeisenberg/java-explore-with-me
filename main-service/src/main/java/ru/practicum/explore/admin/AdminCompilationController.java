@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.compilation.dto.CompilationDto;
 import ru.practicum.explore.compilation.dto.NewCompilationDto;
+import ru.practicum.explore.compilation.service.CompilationService;
 
 @RestController
 @RequestMapping(path = "/admin/compilations")
@@ -13,39 +14,41 @@ import ru.practicum.explore.compilation.dto.NewCompilationDto;
 public class AdminCompilationController {
     private final AdminService adminService;
 
+    private final CompilationService compilationService;
+
     @PostMapping
     public CompilationDto createCompilation(@RequestBody NewCompilationDto newCompilationDto) {
         log.info("Admin post compilation");
-        return adminService.createCompilation(newCompilationDto);
+        return compilationService.createCompilation(newCompilationDto);
     }
 
     @DeleteMapping("/{compId}")
     public void deleteCompilation(@PathVariable Long compId) {
         log.info("Admin delete comtilation id={}", compId);
-        adminService.deleteCompilation(compId);
+        compilationService.deleteCompilation(compId);
     }
 
     @DeleteMapping("/{compId}/events/{eventId}")
     public void deleteEventInCompilation(@PathVariable Long compId, @PathVariable Long eventId) {
         log.info("Admin delete event id={} in compilation id={}", eventId, compId);
-        adminService.deleteEventInCompilation(compId, eventId);
+        compilationService.deleteEventInCompilation(compId, eventId);
     }
 
     @PatchMapping("/{compId}/events/{eventId}")
     public void addEventInCompilation(@PathVariable Long compId, @PathVariable Long eventId) {
         log.info("Admin add event id={} in compilation id={}", eventId, compId);
-        adminService.addEventInCompilation(compId, eventId);
+        compilationService.addEventInCompilation(compId, eventId);
     }
 
     @DeleteMapping("/{compId}/pin")
     public void unpinCompilation(@PathVariable Long compId) {
         log.info("Admin unpin compilation id={}", compId);
-        adminService.unpinCompilation(compId);
+        compilationService.unpinCompilation(compId);
     }
 
     @PatchMapping("/{compId}/pin")
     public void pinCompilation(@PathVariable Long compId) {
         log.info("Admin pin compilation id={}", compId);
-        adminService.pinCompilation(compId);
+        compilationService.pinCompilation(compId);
     }
 }
