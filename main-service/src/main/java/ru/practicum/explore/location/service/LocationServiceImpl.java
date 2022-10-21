@@ -1,7 +1,6 @@
 package ru.practicum.explore.location.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.location.model.Location;
 import ru.practicum.explore.location.repository.LocationRepository;
