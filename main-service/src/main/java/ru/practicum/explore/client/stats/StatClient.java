@@ -19,7 +19,8 @@ import java.util.Map;
 public class StatClient extends BaseClient {
 
     @Autowired
-    public StatClient(@Value("${STAT_SERVER_URL}") String serverUrl, RestTemplateBuilder builder) {
+    public StatClient(@Value("${stat-service.url}") String serverUrl, RestTemplateBuilder builder) {
+
 
         super(
                 builder

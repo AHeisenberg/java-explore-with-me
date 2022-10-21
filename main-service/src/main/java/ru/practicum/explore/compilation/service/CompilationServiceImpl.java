@@ -1,6 +1,7 @@
 package ru.practicum.explore.compilation.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CompilationServiceImpl implements CompilationService {
     private final CompilationRepository compilationRepository;
 
@@ -33,20 +35,27 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public Collection<CompilationDto> findAllCompilations(Boolean pinned, int from, int size) {
         Pageable pageable = PageRequest.of(from, size);
-        Collection<Compilation> compilationCollection =
-                compilationRepository.findAllByPinned(pinned, pageable);
+        boolean compilationsExist = !compilationRepository.findAll().isEmpty();
+        Collection<Compilation> compilationCollection = compilationRepository.findAllByPinned(pinned, pageable);
         Collection<CompilationDto> compilationDtoCollection = new ArrayList<>();
-        if (!compilationCollection.isEmpty()) {
-            for (Compilation c : compilationCollection) {
-                List<EventShortDto> eventShortDtoList = new ArrayList<>();
-                if (c.getEvents().size() != 0) {
-                    eventShortDtoList = c.getEvents().stream()
-                            .map(eventMapper::toEventShortDto)
-                            .collect(Collectors.toList());
-                }
-                compilationDtoCollection.add(compilationMapper.toCompilationDto(c, eventShortDtoList));
+
+        for (Compilation c : compilationCollection) {
+            List<EventShortDto> eventShortDtoList = new ArrayList<>();
+            if (c.getEvents().size() != 0) {
+                eventShortDtoList = c.getEvents().stream()
+                        .map(eventMapper::toEventShortDto)
+                        .collect(Collectors.toList());
             }
+            compilationDtoCollection.add(compilationMapper.toCompilationDto(c, eventShortDtoList));
         }
+
+        if (compilationCollection.isEmpty()) {
+            log.info("Compilations not exist");
+            return compilationDtoCollection;
+        } else {
+
+        }
+       log.info("Find all compilations");
         return compilationDtoCollection;
     }
 
