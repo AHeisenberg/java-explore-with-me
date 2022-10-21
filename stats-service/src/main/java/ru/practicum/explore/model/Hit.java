@@ -8,9 +8,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-/**
- * Класс статистики <b>id</b>,<b>app</b>,<b>uri</b>,<b>ip</b>,<b>timestamp</b>.
- */
 @Entity
 @Table(name = "hits", schema = "public")
 @Data

@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 public class HitServiceImpl implements HitService {
     private final HitRepository hitRepository;
     private final HitMapper hitMapper;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public EndpointHit createHit(EndpointHit endpointHit) {
@@ -29,8 +30,8 @@ public class HitServiceImpl implements HitService {
 
     @Override
     public Collection<ViewStats> getStats(String start, String end, List<String> uris, Boolean unique) {
-        LocalDateTime startTime = LocalDateTime.parse(start, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        LocalDateTime endTime = LocalDateTime.parse(end, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        LocalDateTime startTime = LocalDateTime.parse(start, FORMATTER);
+        LocalDateTime endTime = LocalDateTime.parse(end, FORMATTER);
         Collection<ViewStats> viewStats = new ArrayList<>();
         if (uris == null) {
             uris = hitRepository.findAllByTime(startTime, endTime).stream().distinct().collect(Collectors.toList());

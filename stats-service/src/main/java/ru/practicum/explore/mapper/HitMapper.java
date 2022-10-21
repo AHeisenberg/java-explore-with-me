@@ -12,14 +12,15 @@ import java.util.List;
 @Component
 public class HitMapper {
 
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     public Hit toHit(EndpointHit endpointHit) {
         return Hit.builder()
                 .id(endpointHit.getId())
                 .app(endpointHit.getApp())
                 .uri(endpointHit.getUri())
                 .ip(endpointHit.getIp())
-                .timestamp(LocalDateTime.parse(endpointHit.getTimestamp(),
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .timestamp(LocalDateTime.parse(endpointHit.getTimestamp(), FORMATTER))
                 .build();
     }
 
@@ -29,7 +30,7 @@ public class HitMapper {
                 .app(hit.getApp())
                 .uri(hit.getUri())
                 .ip(hit.getIp())
-                .timestamp(hit.getTimestamp().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .timestamp(hit.getTimestamp().format(FORMATTER))
                 .build();
     }
 
