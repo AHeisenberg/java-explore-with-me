@@ -9,12 +9,6 @@ import ru.practicum.explore.event.model.Event;
 import javax.persistence.*;
 import java.util.List;
 
-/**
- * Класс подборки <b>id</b>,<b>events</b>,<b>pinned</b>,<b>title</b>.
- *
- * @version 1.1
- * @autor Дмитрий Бармин
- */
 @Entity
 @Table(name = "compilations", schema = "public")
 @Data
@@ -22,15 +16,17 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Compilation {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToMany
-    @JoinTable(
-            name = "event_compilation",
-            joinColumns = @JoinColumn(name = "compilation_id"),
+    @JoinTable(name = "event_compilation", joinColumns = @JoinColumn(name = "compilation_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))
     private List<Event> events;
+
     private Boolean pinned;
+
     private String title;
 }

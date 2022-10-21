@@ -28,12 +28,26 @@ public class CompilationServiceImpl implements CompilationService {
     private final CompilationMapper compilationMapper;
     private final EventMapper eventMapper;
     private final ObjectValidate objectValidate;
-
     private final EventRepository eventRepository;
 
+    @Override
+    public void pinCompilation(Long compId) {
+        objectValidate.validateCompilation(compId);
+        Compilation compilation = compilationRepository.findById(compId).get();
+        compilation.setPinned(true);
+        compilationRepository.save(compilation);
+    }
 
     @Override
-    public Collection<CompilationDto> getAll(Boolean pinned, Integer from, Integer size) {
+    public void unpinCompilation(Long compId) {
+        objectValidate.validateCompilation(compId);
+        Compilation compilation = compilationRepository.findById(compId).get();
+        compilation.setPinned(false);
+        compilationRepository.save(compilation);
+    }
+
+    @Override
+    public Collection<CompilationDto> findAll(Boolean pinned, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
         Collection<Compilation> compilationCollection =
                 compilationRepository.findAllByPinnedOrderById(pinned, pageable);
@@ -53,7 +67,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    public Optional<CompilationDto> get(Long compId) {
+    public Optional<CompilationDto> findCompilationById(Long compId) {
         objectValidate.validateCompilation(compId);
         Compilation compilation = compilationRepository.findById(compId).get();
         List<EventShortDto> eventShortDtoList = new ArrayList<>();
@@ -105,22 +119,6 @@ public class CompilationServiceImpl implements CompilationService {
             return;
         }
         compilation.getEvents().add(event);
-        compilationRepository.save(compilation);
-    }
-
-    @Override
-    public void unpinCompilation(Long compId) {
-        objectValidate.validateCompilation(compId);
-        Compilation compilation = compilationRepository.findById(compId).get();
-        compilation.setPinned(false);
-        compilationRepository.save(compilation);
-    }
-
-    @Override
-    public void pinCompilation(Long compId) {
-        objectValidate.validateCompilation(compId);
-        Compilation compilation = compilationRepository.findById(compId).get();
-        compilation.setPinned(true);
         compilationRepository.save(compilation);
     }
 }

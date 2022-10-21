@@ -1,5 +1,6 @@
 package ru.practicum.explore.compilation.mapper;
 
+import org.springframework.stereotype.Component;
 import ru.practicum.explore.compilation.dto.CompilationDto;
 import ru.practicum.explore.compilation.dto.NewCompilationDto;
 import ru.practicum.explore.event.dto.EventShortDto;
@@ -8,17 +9,23 @@ import ru.practicum.explore.event.model.Event;
 
 import java.util.List;
 
-/**
- * Интерфейс маппера подбоки событий
- */
-public interface CompilationMapper {
-    /*
-    Метод маппера из dto новой подборки в модель подборки
-    */
-    Compilation toCompilation(NewCompilationDto newCompilationDto, List<Event> events);
+@Component
+public class CompilationMapper {
+    public Compilation toCompilation(NewCompilationDto newCompilationDto, List<Event> events) {
+        return Compilation.builder()
+                .id(newCompilationDto.getId())
+                .events(events)
+                .pinned(newCompilationDto.getPinned())
+                .title(newCompilationDto.getTitle())
+                .build();
+    }
 
-    /*
-    Метод маппера из модели подборки событий в dto подборки
-    */
-    CompilationDto toCompilationDto(Compilation compilation, List<EventShortDto> list);
+    public CompilationDto toCompilationDto(Compilation compilation, List<EventShortDto> list) {
+        return CompilationDto.builder()
+                .id(compilation.getId())
+                .events(list)
+                .pinned(compilation.getPinned())
+                .title(compilation.getTitle())
+                .build();
+    }
 }
