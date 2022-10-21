@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 import ru.practicum.ewm.category.dto.CategoryDto;
 import ru.practicum.ewm.user.dto.UserShortDto;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor

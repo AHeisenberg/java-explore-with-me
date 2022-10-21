@@ -8,7 +8,6 @@ import ru.practicum.ewm.category.dto.CategoryDto;
 import ru.practicum.ewm.category.dto.NewCategoryDto;
 import ru.practicum.ewm.compilation.dto.CompilationDto;
 import ru.practicum.ewm.compilation.dto.NewCompilationDto;
-import ru.practicum.ewm.compilation.service.CompilationService;
 import ru.practicum.ewm.event.dto.AdminUpdateEventRequest;
 import ru.practicum.ewm.event.dto.EventFullDto;
 import ru.practicum.ewm.event.model.EventStatus;
@@ -54,7 +53,7 @@ public class AdminController {
         return adminService.putEvent(eventId, request);
     }
 
-     @PatchMapping("/events/{eventId}/publish")
+    @PatchMapping("/events/{eventId}/publish")
     public EventFullDto approvePublishEvent(@PathVariable long eventId) {
         log.info("Approve publish event id={}", eventId);
         return adminService.approvePublishEvent(eventId);
