@@ -11,63 +11,28 @@ import ru.practicum.explore.user.dto.UserDto;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Интерфейс сервиса пользователя
- */
 public interface UserService {
-    /*
-    Метод контроллера для получение событий, добавленных текущим пользователем.
-    */
+
     Collection<EventShortDto> findAllEventsByUserId(Long userId, Integer from, Integer size);
 
-    /*
-    Метод контроллера для изменение события добавленного текущим пользователем.
-    */
     EventFullDto patchEventByUser(Long userId, UpdateEventRequest updateEventRequest);
 
-    /*
-    Метод контроллера для добавление нового события.
-    */
     EventFullDto postEvent(Long userId, NewEventDto newEventDto);
 
-    /*
-    Получение полной информации о событии добавленном текущим пользователем.
-    */
     EventFullDto findEventFull(Long userId, Long eventId);
 
-    /*
-    Отмена события добавленного текущим пользователем.
-    */
     EventFullDto cancelEventByUser(Long userId, Long eventId);
 
-    /*
-    Получение информации о запросах на участие в событии текущего пользователя.
-    */
     Collection<ParticipationRequestDto> findRequestByUser(Long userId, Long eventId);
 
-    /*
-    Подтверждение чужой заявки на участие в событии текущего пользователя
-    */
     ParticipationRequestDto approveConfirmUserByEvent(Long userId, Long eventId, Long reqId);
 
-    /*
-    Отклонение чужой заявки на участие в событии текущего пользователя.
-    */
     ParticipationRequestDto approveRejectUserByEvent(Long userId, Long eventId, Long reqId);
 
-    /*
-    Получение информации о заявках текущего пользователя на участие в чужих событиях.
-    */
     Collection<ParticipationRequestDto> findRequestsByUser(Long userId);
 
-    /*
-    Добавление запроса от текущего пользователя на участие в событии.
-    */
     ParticipationRequestDto postRequestUser(Long userId, Long eventId);
 
-    /*
-    Отмена своего запроса на участие в событии.
-    */
     ParticipationRequestDto cancelRequestByUser(Long userId, Long requestId);
 
     /*
