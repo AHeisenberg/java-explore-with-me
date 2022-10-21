@@ -4,9 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.practicum.explore.category.repository.CategoryRepository;
-import ru.practicum.explore.clients.EndpointHit;
-import ru.practicum.explore.clients.stat.StatClient;
+import ru.practicum.explore.client.EndpointHit;
+import ru.practicum.explore.client.stats.StatsClient;
 import ru.practicum.explore.event.dto.EventFullDto;
 import ru.practicum.explore.event.dto.EventShortDto;
 import ru.practicum.explore.event.mapper.EventMapper;
@@ -27,7 +26,7 @@ public class EventServiceImpl implements EventService {
     private EventRepository eventRepository;
     private ParticipationRequestRepository participationRequestRepository;
     private EventMapper eventMapper;
-    private StatClient statClient;
+    private StatsClient statsClient;
     private ObjectValidate objectValidate;
 
 //    private CategoryRepository categoryRepository;
@@ -35,11 +34,11 @@ public class EventServiceImpl implements EventService {
     @Autowired
     public EventServiceImpl(EventRepository eventRepository,
                             ParticipationRequestRepository participationRequestRepository, EventMapper eventMapper,
-                            StatClient statClient, ObjectValidate objectValidate) {
+                            StatsClient statsClient, ObjectValidate objectValidate) {
         this.eventRepository = eventRepository;
         this.participationRequestRepository = participationRequestRepository;
         this.eventMapper = eventMapper;
-        this.statClient = statClient;
+        this.statsClient = statsClient;
         this.objectValidate = objectValidate;
     }
 
@@ -84,7 +83,7 @@ public class EventServiceImpl implements EventService {
                 .ip(request.getRemoteAddr())
                 .timestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .build();
-        statClient.save(endpointHit);
+        statsClient.save(endpointHit);
     }
 
 

@@ -1,4 +1,4 @@
-package ru.practicum.explore.clients.base;
+package ru.practicum.explore.client.base;
 
 import org.springframework.http.*;
 import org.springframework.lang.Nullable;
@@ -8,7 +8,6 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Map;
 
-/* */
 public class BaseClient {
     protected final RestTemplate rest;
 
@@ -16,23 +15,14 @@ public class BaseClient {
         this.rest = rest;
     }
 
-    /*
-    Метод формирования Get запроса на stat-service
-    */
     protected ResponseEntity<Object> get(String path, @Nullable Map<String, Object> parameters) {
         return makeAndSendRequest(HttpMethod.GET, path, parameters, null);
     }
 
-    /*
-    Метод формирования Post запроса на stat-service
-    */
     protected <T> ResponseEntity<Object> post(String path, T body) {
         return makeAndSendRequest(HttpMethod.POST, path, null, body);
     }
 
-    /*
-    Метод сборки и отправки запроса на stat-service
-    */
     private <T> ResponseEntity<Object> makeAndSendRequest(HttpMethod method, String path,
                                                           @Nullable Map<String, Object> parameters, @Nullable T body) {
         HttpEntity<T> requestEntity = new HttpEntity<>(body, defaultHeaders());
@@ -50,9 +40,6 @@ public class BaseClient {
         return prepareMainResponse(response);
     }
 
-    /*
-    Метод сборки заголовков для отправки на stat-service
-    */
     private HttpHeaders defaultHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -60,9 +47,6 @@ public class BaseClient {
         return headers;
     }
 
-    /*
-    Метод получения ответа с stat-service
-    */
     private static ResponseEntity<Object> prepareMainResponse(ResponseEntity<Object> response) {
         if (response.getStatusCode().is2xxSuccessful()) {
             return response;

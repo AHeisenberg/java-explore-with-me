@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import ru.practicum.explore.category.mapper.CategoryMapper;
 import ru.practicum.explore.category.model.Category;
-import ru.practicum.explore.clients.stat.StatClient;
+import ru.practicum.explore.client.stats.StatsClient;
 import ru.practicum.explore.event.dto.*;
 import ru.practicum.explore.event.model.Event;
 import ru.practicum.explore.location.model.Location;
@@ -22,14 +22,14 @@ import java.util.List;
 public class EventMapperImpl implements EventMapper {
     private CategoryMapper categoryMapper;
     private UserMapper userMapper;
-    private StatClient statClient;
+    private StatsClient statsClient;
     private ParticipationRequestRepository participationRequestRepository;
 
-    public EventMapperImpl(CategoryMapper categoryMapper, UserMapper userMapper, StatClient statClient,
+    public EventMapperImpl(CategoryMapper categoryMapper, UserMapper userMapper, StatsClient statsClient,
                            ParticipationRequestRepository participationRequestRepository) {
         this.categoryMapper = categoryMapper;
         this.userMapper = userMapper;
-        this.statClient = statClient;
+        this.statsClient = statsClient;
         this.participationRequestRepository = participationRequestRepository;
     }
 
@@ -37,7 +37,7 @@ public class EventMapperImpl implements EventMapper {
         String start = LocalDateTime.of(2000, 1, 1, 0, 0, 0)
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         String end = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        ResponseEntity<Object> response = statClient.getStats(start, end, List.of("/events/" + id), false);
+        ResponseEntity<Object> response = statsClient.getStats(start, end, List.of("/events/" + id), false);
         List<LinkedHashMap> collection = (List<LinkedHashMap>) response.getBody();
         if (!collection.isEmpty()) {
             Integer views = (Integer) collection.get(0).get("hits");
