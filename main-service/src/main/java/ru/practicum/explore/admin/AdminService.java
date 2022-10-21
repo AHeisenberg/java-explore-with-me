@@ -37,20 +37,7 @@ public interface AdminService {
     */
     EventFullDto approveRejectEvent(Long eventId);
 
-    /*
-    Метод контроллера для обновления категории админом
-    */
-    CategoryDto patchCategory(CategoryDto categoryDto);
 
-    /*
-    Метод контроллера для добавления категории админом
-    */
-    CategoryDto postCategory(NewCategoryDto newCategoryDto);
-
-    /*
-    Метод контроллера для удаления категории админом
-    */
-    void deleteCategory(Long catId);
 
 
 

@@ -83,32 +83,6 @@ public class AdminController {
         return adminService.approveRejectEvent(eventId);
     }
 
-    /*
-    Метод контроллера для обновления категории админом
-    */
-    @PatchMapping("/categories")
-    public CategoryDto patchCategory(@RequestBody CategoryDto categoryDto) {
-        log.info("Admin patch category");
-        return adminService.patchCategory(categoryDto);
-    }
-
-    /*
-    Метод контроллера для добавления категории админом
-    */
-    @PostMapping("/categories")
-    public CategoryDto postCategory(@RequestBody NewCategoryDto newCategoryDto) {
-        log.info("Admin post category");
-        return adminService.postCategory(newCategoryDto);
-    }
-
-    /*
-    Метод контроллера для удаления категории админом
-    */
-    @DeleteMapping("/categories/{catId}")
-    public void deleteCategory(@PathVariable Long catId) {
-        log.info("Admin delete category");
-        adminService.deleteCategory(catId);
-    }
 
 
 

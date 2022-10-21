@@ -123,29 +123,7 @@ public class AdminServiceImpl implements AdminService {
         return eventMapper.toEventFullDto(event);
     }
 
-    @Override
-    public CategoryDto patchCategory(CategoryDto categoryDto) {
-        objectValidate.validateCategory(categoryDto.getId());
-        if (categoryRepository.findFirstByName(categoryDto.getName()).isPresent()) {
-            throw new ForbiddenRequestException(String.format("Bad name"));
-        }
-        Category category = categoryRepository.findById(categoryDto.getId()).get();
-        categoryMapper.updateCategoryFromCategoryDto(categoryDto, category);
-        return categoryMapper.toCategoryDto(categoryRepository.save(category));
-    }
 
-    @Override
-    public CategoryDto postCategory(NewCategoryDto newCategoryDto) {
-        Category category = categoryMapper.toCategory(newCategoryDto);
-        CategoryDto categoryDto = categoryMapper.toCategoryDto(categoryRepository.save(category));
-        return categoryDto;
-    }
-
-    @Override
-    public void deleteCategory(Long catId) {
-        objectValidate.validateCategory(catId);
-        categoryRepository.deleteById(catId);
-    }
 
 
 
