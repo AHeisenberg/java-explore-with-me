@@ -186,12 +186,12 @@ class UserServiceImpl implements UserService {
                     .requester(user)
                     .status(RequestStatus.PENDING)
                     .build();
-            Integer limitParticipant = participationRequestRepository.countByEvent_IdAndStatus(eventId,
+            Integer count = participationRequestRepository.countByEvent_IdAndStatus(eventId,
                     RequestStatus.CONFIRMED);
             if (!event.getRequestModeration()) {
                 participationRequest.setStatus(RequestStatus.CONFIRMED);
             }
-            if (event.getParticipantLimit() != 0 && Objects.equals(event.getParticipantLimit(), limitParticipant)) {
+            if (event.getParticipantLimit() != 0 && Objects.equals(event.getParticipantLimit(), count)) {
                 participationRequest.setStatus(RequestStatus.REJECTED);
             }
             return requestMapper.toParticipationRequestDto(participationRequestRepository.save(participationRequest));
