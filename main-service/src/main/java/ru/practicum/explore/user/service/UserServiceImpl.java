@@ -1,6 +1,6 @@
 package ru.practicum.explore.user.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -38,6 +38,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final EventMapper eventMapper;
@@ -47,34 +48,15 @@ class UserServiceImpl implements UserService {
     private final LocationService locationService;
     private final ParticipationRequestRepository participationRequestRepository;
     private final CategoryRepository categoryRepository;
-    private CommonValidator commonValidator;
-
-    @Autowired
-    public UserServiceImpl(UserMapper userMapper, EventMapper eventMapper, RequestMapper requestMapper,
-                           UserRepository userRepository, EventRepository eventRepository,
-                           LocationService locationService,
-                           ParticipationRequestRepository participationRequestRepository,
-                           CategoryRepository categoryRepository, CommonValidator commonValidator) {
-        this.userMapper = userMapper;
-        this.eventMapper = eventMapper;
-        this.requestMapper = requestMapper;
-        this.userRepository = userRepository;
-        this.eventRepository = eventRepository;
-        this.locationService = locationService;
-        this.participationRequestRepository = participationRequestRepository;
-        this.categoryRepository = categoryRepository;
-        this.commonValidator = commonValidator;
-    }
+    private final CommonValidator commonValidator;
 
     @Override
     public Collection<EventShortDto> findAllEventsByUserId(Long userId, Integer from, Integer size) {
         commonValidator.validateUser(userId);
         Pageable pageable = PageRequest.of(from / size, size);
-        Collection<EventShortDto> listEventShort =
-                eventRepository.findAllByInitiatorId(userId, pageable).stream()
-                        .map(eventMapper::toEventShortDto)
-                        .collect(Collectors.toList());
-        return listEventShort;
+        return eventRepository.findAllByInitiatorId(userId, pageable).stream()
+                .map(eventMapper::toEventShortDto)
+                .collect(Collectors.toList());;
     }
 
     @Override
@@ -121,8 +103,7 @@ class UserServiceImpl implements UserService {
         Category category = categoryRepository.findById(Long.valueOf(newEventDto.getCategory())).get();
         Event event = eventMapper.toEvent(newEventDto, user, location, category, eventDate);
         event.setState(EventStatus.PENDING);
-        EventFullDto eventFullDto = eventMapper.toEventFullDto(eventRepository.save(event));
-        return eventFullDto;
+        return eventMapper.toEventFullDto(eventRepository.save(event));
     }
 
     @Override
@@ -159,11 +140,9 @@ class UserServiceImpl implements UserService {
         if (!Objects.equals(event.getInitiator().getId(), userId)) {
             throw new ForbiddenRequestException(String.format("Sorry you no Event initiator"));
         }
-        Collection<ParticipationRequestDto> listRequest =
-                participationRequestRepository.findAllByEvent(eventId, userId).stream()
-                        .map(requestMapper::toParticipationRequestDto)
-                        .collect(Collectors.toList());
-        return listRequest;
+        return participationRequestRepository.findAllByEvent(eventId, userId).stream()
+                .map(requestMapper::toParticipationRequestDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -202,11 +181,9 @@ class UserServiceImpl implements UserService {
     @Override
     public Collection<ParticipationRequestDto> findRequestsByUser(Long userId) {
         commonValidator.validateUser(userId);
-        Collection<ParticipationRequestDto> listRequests =
-                participationRequestRepository.findAllByRequester_IdOrderById(userId).stream()
-                        .map(requestMapper::toParticipationRequestDto)
-                        .collect(Collectors.toList());
-        return listRequests;
+        return participationRequestRepository.findAllByRequester_IdOrderById(userId).stream()
+                .map(requestMapper::toParticipationRequestDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -254,17 +231,15 @@ class UserServiceImpl implements UserService {
     @Override
     public Collection<UserDto> findAllUsers(List<Long> ids, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
-        Collection<UserDto> userDtoCollection = userRepository.findAllByIdOrderByIdDesc(ids, pageable).stream()
+        return userRepository.findAllByIdOrderByIdDesc(ids, pageable).stream()
                 .map(userMapper::toUserDto)
                 .collect(Collectors.toList());
-        return userDtoCollection;
     }
 
     @Override
     public UserDto postUser(NewUserRequest userRequest) {
         User user = userMapper.toUser(userRequest);
-        UserDto userDto = userMapper.toUserDto(userRepository.save(user));
-        return userDto;
+        return userMapper.toUserDto(userRepository.save(user));
     }
 
     @Override
