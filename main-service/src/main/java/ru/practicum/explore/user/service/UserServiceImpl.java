@@ -56,7 +56,7 @@ class UserServiceImpl implements UserService {
         Pageable pageable = PageRequest.of(from / size, size);
         return eventRepository.findAllByInitiatorId(userId, pageable).stream()
                 .map(eventMapper::toEventShortDto)
-                .collect(Collectors.toList());;
+                .collect(Collectors.toList());
     }
 
     @Override
