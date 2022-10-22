@@ -129,12 +129,6 @@ class UserServiceImpl implements UserService {
         return eventMapper.toEventFullDto(event);
     }
 
-    private void validatorForSomeUser(Long userId, Event event) {
-        if (!Objects.equals(event.getInitiator().getId(), userId)) {
-            throw new ForbiddenRequestException(EVENT_INITIATOR_IS_WRONG);
-        }
-    }
-
     @Override
     public EventFullDto cancelEventByUser(Long userId, Long eventId) {
         commonValidator.validateUser(userId);
@@ -143,13 +137,6 @@ class UserServiceImpl implements UserService {
         validatorVorFullEvent(userId, event);
         event.setState(EventStatus.CANCELED);
         return eventMapper.toEventFullDto(eventRepository.save(event));
-    }
-
-    private void validatorVorFullEvent(Long userId, Event event) {
-        validatorForSomeUser(userId, event);
-        if (event.getState().equals(EventStatus.PUBLISHED) || event.getState().equals(EventStatus.CANCELED)) {
-            throw new ForbiddenRequestException(EVENT_STATUS_IS_WRONG);
-        }
     }
 
     @Override
@@ -214,7 +201,7 @@ class UserServiceImpl implements UserService {
         if (eventRepository.findById(eventId).get().getState().equals(EventStatus.PUBLISHED)) {
             User user = userRepository.findById(userId).get();
             Event event = eventRepository.findById(eventId).get();
-            ParticipationRequest participationRequest = new ParticipationRequest().builder()
+            ParticipationRequest participationRequest = ParticipationRequest.builder()
                     .created(LocalDateTime.now())
                     .event(event)
                     .requester(user)
@@ -264,5 +251,18 @@ class UserServiceImpl implements UserService {
     public void deleteUser(Long userId) {
         commonValidator.validateUser(userId);
         userRepository.deleteById(userId);
+    }
+
+    private void validatorVorFullEvent(Long userId, Event event) {
+        validatorForSomeUser(userId, event);
+        if (event.getState().equals(EventStatus.PUBLISHED) || event.getState().equals(EventStatus.CANCELED)) {
+            throw new ForbiddenRequestException(EVENT_STATUS_IS_WRONG);
+        }
+    }
+
+    private void validatorForSomeUser(Long userId, Event event) {
+        if (!Objects.equals(event.getInitiator().getId(), userId)) {
+            throw new ForbiddenRequestException(EVENT_INITIATOR_IS_WRONG);
+        }
     }
 }
