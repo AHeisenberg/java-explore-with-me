@@ -36,14 +36,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Optional<CategoryDto> findCategoryById(Long catId) {
-        commonValidator.validateCategory(catId);
+        commonValidator.categoryValidator(catId);
         Category category = categoryRepository.findById(catId).get();
         return Optional.of(categoryMapper.toCategoryDto(category));
     }
 
     @Override
     public CategoryDto patchCategory(CategoryDto categoryDto) {
-        commonValidator.validateCategory(categoryDto.getId());
+        commonValidator.categoryValidator(categoryDto.getId());
         if (categoryRepository.findFirstByName(categoryDto.getName()).isPresent()) {
             throw new ForbiddenRequestException(String.format("Bad name"));
         }
@@ -61,7 +61,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteCategory(Long catId) {
-        commonValidator.validateCategory(catId);
+        commonValidator.categoryValidator(catId);
         categoryRepository.deleteById(catId);
     }
 }

@@ -20,31 +20,31 @@ public class CommonValidator {
 
     private static final String OBJECT_NOT_FOUND = "Object not found id=%s";
 
-    public void validateUser(Long id) {
+    public void userValidator(Long id) {
         if (userRepository.findById(id).isEmpty()) {
             throw new ObjectNotFoundException(String.format(OBJECT_NOT_FOUND, id));
         }
     }
 
-    public void validateEvent(Long id) {
+    public void eventValidator(Long id) {
         if (eventRepository.findById(id).isEmpty()) {
             throw new ObjectNotFoundException(String.format(OBJECT_NOT_FOUND, id));
         }
     }
 
-    public void validateCategory(Long id) {
+    public void categoryValidator(Long id) {
         if (categoryRepository.findById(id).isEmpty()) {
             throw new ObjectNotFoundException(String.format(OBJECT_NOT_FOUND, id));
         }
     }
 
-    public void validateRequest(Long id) {
+    public void requestValidator(Long id) {
         if (participationRequestRepository.findById(id).isEmpty()) {
             throw new ObjectNotFoundException(String.format(OBJECT_NOT_FOUND, id));
         }
     }
 
-    public void validateCompilation(Long id) {
+    public void compilationValidator(Long id) {
         if (compilationRepository.findById(id).isEmpty()) {
             throw new ObjectNotFoundException(String.format(OBJECT_NOT_FOUND, id));
         }

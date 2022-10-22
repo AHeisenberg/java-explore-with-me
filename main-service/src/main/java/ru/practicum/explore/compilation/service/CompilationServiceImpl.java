@@ -32,7 +32,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public void pinCompilation(Long compId) {
-        commonValidator.validateCompilation(compId);
+        commonValidator.compilationValidator(compId);
         Compilation compilation = compilationRepository.findById(compId).get();
         compilation.setPinned(true);
         compilationRepository.save(compilation);
@@ -40,7 +40,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public void unpinCompilation(Long compId) {
-        commonValidator.validateCompilation(compId);
+        commonValidator.compilationValidator(compId);
         Compilation compilation = compilationRepository.findById(compId).get();
         compilation.setPinned(false);
         compilationRepository.save(compilation);
@@ -68,7 +68,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public Optional<CompilationDto> findCompilationById(Long compId) {
-        commonValidator.validateCompilation(compId);
+        commonValidator.compilationValidator(compId);
         Compilation compilation = compilationRepository.findById(compId).get();
         List<EventShortDto> eventShortDtoList = new ArrayList<>();
         if (compilation.getEvents().size() != 0) {
@@ -92,14 +92,14 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public void deleteCompilation(Long compId) {
-        commonValidator.validateCompilation(compId);
+        commonValidator.compilationValidator(compId);
         compilationRepository.deleteById(compId);
     }
 
     @Override
     public void deleteEventInCompilation(Long compId, Long eventId) {
-        commonValidator.validateCompilation(compId);
-        commonValidator.validateEvent(eventId);
+        commonValidator.compilationValidator(compId);
+        commonValidator.eventValidator(eventId);
         Compilation compilation = compilationRepository.findById(compId).get();
         Event event = eventRepository.findById(eventId).get();
         if (!compilation.getEvents().contains(event)) {
@@ -111,8 +111,8 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public void addEventInCompilation(Long compId, Long eventId) {
-        commonValidator.validateCompilation(compId);
-        commonValidator.validateEvent(eventId);
+        commonValidator.compilationValidator(compId);
+        commonValidator.eventValidator(eventId);
         Compilation compilation = compilationRepository.findById(compId).get();
         Event event = eventRepository.findById(eventId).get();
         if (compilation.getEvents().contains(event)) {

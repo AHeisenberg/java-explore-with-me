@@ -50,7 +50,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     @Override
     public EventFullDto putEvent(Long eventId, AdminUpdateEventRequest adminUpdateEventRequest) {
-        commonValidator.validateEvent(eventId);
+        commonValidator.eventValidator(eventId);
         LocalDateTime eventDate = LocalDateTime.parse(adminUpdateEventRequest.getEventDate(), FORMATTER);
         if (!eventDate.isAfter(LocalDateTime.now().minusHours(2))) {
             throw new ForbiddenRequestException(String.format("Bad date."));
@@ -71,7 +71,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     @Override
     public EventFullDto approvePublishEvent(Long eventId) {
-        commonValidator.validateEvent(eventId);
+        commonValidator.eventValidator(eventId);
         Event event = eventRepository.findById(eventId).get();
         event.setState(EventStatus.PUBLISHED);
         eventRepository.save(event);
@@ -80,7 +80,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     @Override
     public EventFullDto approveRejectEvent(Long eventId) {
-        commonValidator.validateEvent(eventId);
+        commonValidator.eventValidator(eventId);
         Event event = eventRepository.findById(eventId).get();
         event.setState(EventStatus.CANCELED);
         eventRepository.save(event);

@@ -55,7 +55,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Optional<EventFullDto> findEventById(Long id) {
-        commonValidator.validateEvent(id);
+        commonValidator.eventValidator(id);
         Event event = eventRepository.findById(id).get();
         EventFullDto eventFullDto = eventMapper.toEventFullDto(event);
         return Optional.of(eventFullDto);
