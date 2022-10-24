@@ -13,7 +13,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/admin/users")
-@Slf4j
 public class AdminUserController {
 
     private final UserService userService;
@@ -22,19 +21,16 @@ public class AdminUserController {
     public Collection<UserDto> findAllUsers(@RequestParam List<Long> ids,
                                             @RequestParam(defaultValue = "0") Integer from,
                                             @RequestParam(defaultValue = "10") Integer size) {
-        log.info("Admin get all users");
         return userService.findAllUsers(ids, from, size);
     }
 
     @PostMapping
     public UserDto postUser(@RequestBody NewUserRequest newUserRequest) {
-        log.info("Admin post user");
         return userService.postUser(newUserRequest);
     }
 
     @DeleteMapping("/{userId}")
     public void deleteUser(@PathVariable Long userId) {
-        log.info("Admin delete user by id={}", userId);
         userService.deleteUser(userId);
     }
 }

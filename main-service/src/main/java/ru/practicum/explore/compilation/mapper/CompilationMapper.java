@@ -1,5 +1,6 @@
 package ru.practicum.explore.compilation.mapper;
 
+import com.sun.istack.NotNull;
 import org.springframework.stereotype.Component;
 import ru.practicum.explore.compilation.dto.CompilationDto;
 import ru.practicum.explore.compilation.dto.NewCompilationDto;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Component
 public class CompilationMapper {
-    public Compilation toCompilation(NewCompilationDto newCompilationDto, List<Event> events) {
+    public Compilation toCompilation(@NotNull NewCompilationDto newCompilationDto, List<Event> events) {
         return Compilation.builder()
                 .id(newCompilationDto.getId())
                 .events(events)
@@ -20,7 +21,7 @@ public class CompilationMapper {
                 .build();
     }
 
-    public CompilationDto toCompilationDto(Compilation compilation, List<EventShortDto> list) {
+    public static CompilationDto toCompilationDto(@NotNull Compilation compilation, List<EventShortDto> list) {
         return CompilationDto.builder()
                 .id(compilation.getId())
                 .events(list)

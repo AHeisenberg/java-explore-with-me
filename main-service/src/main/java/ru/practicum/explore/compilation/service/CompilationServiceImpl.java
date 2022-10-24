@@ -1,6 +1,7 @@
 package ru.practicum.explore.compilation.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CompilationServiceImpl implements CompilationService {
     private final CompilationRepository compilationRepository;
     private final CompilationMapper compilationMapper;
@@ -32,6 +34,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public void pinCompilation(Long compId) {
+        log.info("Admin pin compilation by id={}", compId);
         commonValidator.compilationValidator(compId);
         Compilation compilation = compilationRepository.findById(compId).get();
         compilation.setPinned(true);
@@ -40,6 +43,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public void unpinCompilation(Long compId) {
+        log.info("Admin unpin compilation by id={}", compId);
         commonValidator.compilationValidator(compId);
         Compilation compilation = compilationRepository.findById(compId).get();
         compilation.setPinned(false);
@@ -48,11 +52,14 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public Collection<CompilationDto> findAll(Boolean pinned, Integer from, Integer size) {
+        log.info("Find all compilations");
         Pageable pageable = PageRequest.of(from / size, size);
         Collection<Compilation> compilationCollection =
                 compilationRepository.findAllByPinnedOrderById(pinned, pageable);
         Collection<CompilationDto> compilationDtoCollection = new ArrayList<>();
-        if (!compilationCollection.isEmpty()) {
+        if (compilationCollection.isEmpty()) {
+            return compilationDtoCollection;
+        } else {
             for (Compilation c : compilationCollection) {
                 List<EventShortDto> eventShortDtoList = new ArrayList<>();
                 if (c.getEvents().size() != 0) {
@@ -60,7 +67,7 @@ public class CompilationServiceImpl implements CompilationService {
                             .map(eventMapper::toEventShortDto)
                             .collect(Collectors.toList());
                 }
-                compilationDtoCollection.add(compilationMapper.toCompilationDto(c, eventShortDtoList));
+                compilationDtoCollection.add(CompilationMapper.toCompilationDto(c, eventShortDtoList));
             }
         }
         return compilationDtoCollection;
@@ -68,6 +75,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public Optional<CompilationDto> findCompilationById(Long compId) {
+        log.info("Find compilation by id={}", compId);
         commonValidator.compilationValidator(compId);
         Compilation compilation = compilationRepository.findById(compId).get();
         List<EventShortDto> eventShortDtoList = new ArrayList<>();
@@ -76,28 +84,31 @@ public class CompilationServiceImpl implements CompilationService {
                     .map(eventMapper::toEventShortDto)
                     .collect(Collectors.toList());
         }
-        return Optional.of(compilationMapper.toCompilationDto(compilation, eventShortDtoList));
+        return Optional.of(CompilationMapper.toCompilationDto(compilation, eventShortDtoList));
     }
 
     @Override
     public CompilationDto createCompilation(NewCompilationDto newCompilationDto) {
+        log.info("Admin post compilation title={}", newCompilationDto.getTitle());
         List<Event> events = eventRepository.findAllById(newCompilationDto.getEvents());
         Compilation compilation = compilationMapper.toCompilation(newCompilationDto, events);
         compilationRepository.save(compilation);
         List<EventShortDto> eventShortDtoList = events.stream()
                 .map(eventMapper::toEventShortDto)
                 .collect(Collectors.toList());
-        return compilationMapper.toCompilationDto(compilation, eventShortDtoList);
+        return CompilationMapper.toCompilationDto(compilation, eventShortDtoList);
     }
 
     @Override
     public void deleteCompilation(Long compId) {
+        log.info("Admin delete compilation id={}", compId);
         commonValidator.compilationValidator(compId);
         compilationRepository.deleteById(compId);
     }
 
     @Override
     public void deleteEventInCompilation(Long compId, Long eventId) {
+        log.info("Admin delete event id={} in compilation id={}", eventId, compId);
         commonValidator.compilationValidator(compId);
         commonValidator.eventValidator(eventId);
         Compilation compilation = compilationRepository.findById(compId).get();
@@ -111,6 +122,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public void addEventInCompilation(Long compId, Long eventId) {
+        log.info("Admin add event id={} in compilation id={}", eventId, compId);
         commonValidator.compilationValidator(compId);
         commonValidator.eventValidator(eventId);
         Compilation compilation = compilationRepository.findById(compId).get();

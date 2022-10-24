@@ -1,5 +1,6 @@
 package ru.practicum.explore.event.mapper;
 
+import com.sun.istack.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -30,27 +31,19 @@ public class EventMapper {
 
 
     public Integer getViews(Long id) {
-        String start = LocalDateTime.of(2000, 1, 1, 0, 0, 0).format(FORMATTER);
+        String start = LocalDateTime.of(2020, 1, 1, 0, 0, 0).format(FORMATTER);
         String end = LocalDateTime.now().format(FORMATTER);
         ResponseEntity<Object> response = statsClient.getStats(start, end, List.of("/events/" + id), false);
         List<LinkedHashMap> collection = (List<LinkedHashMap>) response.getBody();
-        if (!collection.isEmpty()) {
-            Integer views = (Integer) collection.get(0).get("hits");
-            return views;
-        }
-        return 0;
+        return collection.isEmpty() ? 0 : (Integer) collection.get(0).get("hits");
     }
 
     public Integer getConfirmedRequests(Long id) {
-        Integer limitParticipant = participationRequestRepository.countByEvent_IdAndStatus(id, RequestStatus.CONFIRMED);
-        return limitParticipant;
+        return participationRequestRepository.countByEvent_IdAndStatus(id, RequestStatus.CONFIRMED);
     }
 
 
-    public EventFullDto toEventFullDto(Event event) {
-        if (event == null) {
-            return null;
-        }
+    public EventFullDto toEventFullDto(@NotNull Event event) {
         return EventFullDto.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
@@ -74,7 +67,7 @@ public class EventMapper {
     }
 
 
-    public EventShortDto toEventShortDto(Event event) {
+    public EventShortDto toEventShortDto(@NotNull Event event) {
         return EventShortDto.builder()
                 .id(event.getId())
                 .annotation(event.getAnnotation())
@@ -89,11 +82,8 @@ public class EventMapper {
     }
 
 
-    public Event toEvent(NewEventDto newEventDto, User user,
-                         Location location, Category category, LocalDateTime eventDate) {
-        if (newEventDto == null) {
-            return null;
-        }
+    public Event toEvent(@NotNull NewEventDto newEventDto, User user, Location location,
+                         Category category, LocalDateTime eventDate) {
         return Event.builder()
                 .annotation(newEventDto.getAnnotation())
                 .category(category)
@@ -110,10 +100,7 @@ public class EventMapper {
     }
 
 
-    public void updateEventFromNewEventDto(UpdateEventRequest newEventDto, Event event) {
-        if (newEventDto == null) {
-            return;
-        }
+    public void updateEventFromNewEventDto(@NotNull UpdateEventRequest newEventDto, @NotNull Event event) {
         if (newEventDto.getAnnotation() != null) {
             event.setAnnotation(newEventDto.getAnnotation());
         }
@@ -135,7 +122,7 @@ public class EventMapper {
     }
 
 
-    public void updateEventFromAdminUpdateEventRequest(AdminUpdateEventRequest adminUpdateEventRequest, Event event) {
+    public void updateEventFromAdminUpdateEventRequest(@NotNull AdminUpdateEventRequest adminUpdateEventRequest, Event event) {
         if (adminUpdateEventRequest.getAnnotation() != null) {
             event.setAnnotation(adminUpdateEventRequest.getAnnotation());
         }

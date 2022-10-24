@@ -15,7 +15,6 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/admin/events")
-@Slf4j
 public class AdminEventController {
 
     private final AdminEventService adminEventService;
@@ -37,26 +36,22 @@ public class AdminEventController {
                 "from", from,
                 "size", size
         );
-        log.info("Admin find events by parameters {}", parameters);
         return adminEventService.findAllEvents(parameters);
     }
 
     @PutMapping("/{eventId}")
     public EventFullDto putEvent(@PathVariable Long eventId,
                                  @RequestBody AdminUpdateEventRequest adminUpdateEventRequest) {
-        log.info("Admin Put event id={}", eventId);
         return adminEventService.putEvent(eventId, adminUpdateEventRequest);
     }
 
     @PatchMapping("/{eventId}/publish")
     public EventFullDto approvePublishEvent(@PathVariable Long eventId) {
-        log.info("Admin approve publish event id={}", eventId);
         return adminEventService.approvePublishEvent(eventId);
     }
 
     @PatchMapping("/{eventId}/reject")
     public EventFullDto approveRejectEvent(@PathVariable Long eventId) {
-        log.info("Admin approve reject event id={}", eventId);
         return adminEventService.approveRejectEvent(eventId);
     }
 

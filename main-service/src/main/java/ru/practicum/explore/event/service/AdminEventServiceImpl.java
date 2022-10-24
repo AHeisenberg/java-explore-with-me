@@ -1,6 +1,7 @@
 package ru.practicum.explore.event.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AdminEventServiceImpl implements AdminEventService {
     private final CategoryRepository categoryRepository;
     private final EventRepository eventRepository;
@@ -36,6 +38,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     @Override
     public Collection<EventFullDto> findAllEvents(Map<String, Object> parameters) {
+        log.info("Admin find events by parameters {}", parameters);
         Pageable pageable = PageRequest.of((Integer) parameters.get("from") / (Integer) parameters.get("size"),
                 (Integer) parameters.get("size"));
         List<Long> users = (List<Long>) parameters.get("users");
@@ -50,15 +53,16 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     @Override
     public EventFullDto putEvent(Long eventId, AdminUpdateEventRequest adminUpdateEventRequest) {
+        log.info("Admin Put event id={}", eventId);
         commonValidator.eventValidator(eventId);
         LocalDateTime eventDate = LocalDateTime.parse(adminUpdateEventRequest.getEventDate(), FORMATTER);
         if (!eventDate.isAfter(LocalDateTime.now().minusHours(2))) {
-            throw new ForbiddenRequestException(String.format("Bad date."));
+            throw new ForbiddenRequestException("Date is not correct");
         }
         Event event = eventRepository.findById(eventId).get();
         if (adminUpdateEventRequest.getCategory() != null) {
             if (categoryRepository.findById(Long.valueOf(adminUpdateEventRequest.getCategory())).isEmpty()) {
-                throw new ObjectNotFoundException(String.format("Category not found."));
+                throw new ObjectNotFoundException("Category is not exist");
             }
             Category category = categoryRepository.findById(Long.valueOf(adminUpdateEventRequest.getCategory())).get();
             event.setCategory(category);
@@ -71,6 +75,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     @Override
     public EventFullDto approvePublishEvent(Long eventId) {
+        log.info("Admin approve publish event id={}", eventId);
         commonValidator.eventValidator(eventId);
         Event event = eventRepository.findById(eventId).get();
         event.setState(EventStatus.PUBLISHED);
@@ -80,6 +85,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     @Override
     public EventFullDto approveRejectEvent(Long eventId) {
+        log.info("Admin approve reject event id={}", eventId);
         commonValidator.eventValidator(eventId);
         Event event = eventRepository.findById(eventId).get();
         event.setState(EventStatus.CANCELED);

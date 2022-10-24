@@ -1,6 +1,7 @@
 package ru.practicum.explore.event.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
@@ -32,6 +34,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Collection<EventShortDto> findAllEvents(Map<String, Object> parameters) {
+        log.info("Find all events by parameters {}", parameters);
         Pageable pageable = PageRequest.of((Integer) parameters.get("from") / (Integer) parameters.get("size"),
                 (Integer) parameters.get("size"));
         String text = (String) parameters.get("text");
@@ -55,6 +58,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Optional<EventFullDto> findEventById(Long id) {
+        log.info("Find event by id={}", id);
         commonValidator.eventValidator(id);
         Event event = eventRepository.findById(id).get();
         EventFullDto eventFullDto = eventMapper.toEventFullDto(event);

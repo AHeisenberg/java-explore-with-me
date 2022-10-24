@@ -1,6 +1,7 @@
 package ru.practicum.explore.user.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final EventMapper eventMapper;
@@ -58,6 +60,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public Collection<EventShortDto> findAllEventsByUserId(Long userId, Integer from, Integer size) {
+        log.info("Find all events by user id={}", userId);
         commonValidator.userValidator(userId);
         Pageable pageable = PageRequest.of(from / size, size);
         return eventRepository.findAllByInitiatorId(userId, pageable).stream()
@@ -67,6 +70,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public EventFullDto patchEventByUser(Long userId, UpdateEventRequest updateEventRequest) {
+        log.info("Patch event by user id={}", userId);
         commonValidator.userValidator(userId);
         commonValidator.eventValidator(updateEventRequest.getEventId());
         Event event = eventRepository.findById(updateEventRequest.getEventId()).get();
@@ -87,6 +91,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public EventFullDto postEvent(Long userId, NewEventDto newEventDto) {
+        log.info("Post new event by id={}", userId);
         commonValidator.userValidator(userId);
         LocalDateTime eventDate = LocalDateTime.parse(newEventDto.getEventDate(), FORMATTER);
         validatorForPostEvent(newEventDto, eventDate);
@@ -100,6 +105,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public EventFullDto findEventFull(Long userId, Long eventId) {
+        log.info("Get event id={} user id={}", eventId, userId);
         commonValidator.userValidator(userId);
         commonValidator.eventValidator(eventId);
         Event event = eventRepository.findById(eventId).get();
@@ -110,6 +116,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public EventFullDto cancelEventByUser(Long userId, Long eventId) {
+        log.info("Cancel event id={} by user id={}", eventId, userId);
         commonValidator.userValidator(userId);
         commonValidator.eventValidator(eventId);
         Event event = eventRepository.findById(eventId).get();
@@ -120,6 +127,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public Collection<ParticipationRequestDto> findRequestByUser(Long userId, Long eventId) {
+        log.info("Get request by user id={} and event id={}", userId, eventId);
         commonValidator.userValidator(userId);
         commonValidator.eventValidator(eventId);
         Event event = eventRepository.findById(eventId).get();
@@ -131,6 +139,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public ParticipationRequestDto approveConfirmUserByEvent(Long userId, Long eventId, Long reqId) {
+        log.info("Approve request={} by user id={} and event id={}", reqId, userId, eventId);
         commonValidator.userValidator(userId);
         commonValidator.eventValidator(eventId);
         commonValidator.requestValidator(reqId);
@@ -150,6 +159,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public ParticipationRequestDto approveRejectUserByEvent(Long userId, Long eventId, Long reqId) {
+        log.info("Reject request={} by user id={} and event id={}", reqId, userId, eventId);
         commonValidator.userValidator(userId);
         commonValidator.eventValidator(eventId);
         commonValidator.requestValidator(reqId);
@@ -164,6 +174,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public Collection<ParticipationRequestDto> findRequestsByUser(Long userId) {
+        log.info("Find all request by id={}", userId);
         commonValidator.userValidator(userId);
         return participationRequestRepository.findAllByRequester_IdOrderById(userId).stream()
                 .map(requestMapper::toParticipationRequestDto)
@@ -172,6 +183,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public ParticipationRequestDto postRequestUser(Long userId, Long eventId) {
+        log.info("Post request by user id={} and event id={}", userId, eventId);
         commonValidator.userValidator(userId);
         commonValidator.eventValidator(eventId);
         if (Objects.equals(eventRepository.findById(eventId).get().getInitiator().getId(), userId)) {
@@ -202,6 +214,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public ParticipationRequestDto cancelRequestByUser(Long userId, Long requestId) {
+        log.info("Patch request id={} by user id={}", userId, requestId);
         commonValidator.userValidator(userId);
         commonValidator.requestValidator(requestId);
         if (!Objects.equals(participationRequestRepository.findById(requestId).get().getRequester().getId(), userId)) {
@@ -214,6 +227,7 @@ class UserServiceImpl implements UserService {
 
     @Override
     public Collection<UserDto> findAllUsers(List<Long> ids, Integer from, Integer size) {
+        log.info("Admin get all users");
         Pageable pageable = PageRequest.of(from / size, size);
         return userRepository.findAllByIdOrderByIdDesc(ids, pageable).stream()
                 .map(userMapper::toUserDto)
@@ -222,12 +236,14 @@ class UserServiceImpl implements UserService {
 
     @Override
     public UserDto postUser(NewUserRequest userRequest) {
+        log.info("Admin post user");
         User user = userMapper.toUser(userRequest);
         return userMapper.toUserDto(userRepository.save(user));
     }
 
     @Override
     public void deleteUser(Long userId) {
+        log.info("Admin delete user by id={}", userId);
         commonValidator.userValidator(userId);
         userRepository.deleteById(userId);
     }
