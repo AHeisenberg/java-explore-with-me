@@ -29,20 +29,6 @@ public class EventMapper {
     private final ParticipationRequestRepository participationRequestRepository;
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-
-    public Integer getViews(Long id) {
-        String start = LocalDateTime.of(2020, 1, 1, 0, 0, 0).format(FORMATTER);
-        String end = LocalDateTime.now().format(FORMATTER);
-        ResponseEntity<Object> response = statsClient.getStats(start, end, List.of("/events/" + id), false);
-        List<LinkedHashMap> collection = (List<LinkedHashMap>) response.getBody();
-        return collection.isEmpty() ? 0 : (Integer) collection.get(0).get("hits");
-    }
-
-    public Integer getConfirmedRequests(Long id) {
-        return participationRequestRepository.countByEvent_IdAndStatus(id, RequestStatus.CONFIRMED);
-    }
-
-
     public EventFullDto toEventFullDto(@NotNull Event event) {
         return EventFullDto.builder()
                 .id(event.getId())
@@ -99,30 +85,8 @@ public class EventMapper {
                 .build();
     }
 
-
-    public void updateEventFromNewEventDto(@NotNull UpdateEventRequest newEventDto, @NotNull Event event) {
-        if (newEventDto.getAnnotation() != null) {
-            event.setAnnotation(newEventDto.getAnnotation());
-        }
-        if (newEventDto.getDescription() != null) {
-            event.setDescription(newEventDto.getDescription());
-        }
-        if (newEventDto.getEventDate() != null) {
-            event.setEventDate(LocalDateTime.parse(newEventDto.getEventDate(), FORMATTER));
-        }
-        if (newEventDto.getPaid() != null) {
-            event.setPaid(newEventDto.getPaid());
-        }
-        if (newEventDto.getParticipantLimit() != null) {
-            event.setParticipantLimit(newEventDto.getParticipantLimit());
-        }
-        if (newEventDto.getTitle() != null) {
-            event.setTitle(newEventDto.getTitle());
-        }
-    }
-
-
-    public void updateEventFromAdminUpdateEventRequest(@NotNull AdminUpdateEventRequest adminUpdateEventRequest, Event event) {
+    public void updateEventFromAdminUpdateEventRequest(
+            @NotNull AdminUpdateEventRequest adminUpdateEventRequest, Event event) {
         if (adminUpdateEventRequest.getAnnotation() != null) {
             event.setAnnotation(adminUpdateEventRequest.getAnnotation());
         }
@@ -144,5 +108,17 @@ public class EventMapper {
         if (adminUpdateEventRequest.getTitle() != null) {
             event.setTitle(adminUpdateEventRequest.getTitle());
         }
+    }
+
+    private Integer getViews(Long id) {
+        String start = LocalDateTime.of(2020, 1, 1, 0, 0, 0).format(FORMATTER);
+        String end = LocalDateTime.now().format(FORMATTER);
+        ResponseEntity<Object> response = statsClient.getStats(start, end, List.of("/events/" + id), false);
+        List<LinkedHashMap> collection = (List<LinkedHashMap>) response.getBody();
+        return collection.isEmpty() ? 0 : (Integer) collection.get(0).get("hits");
+    }
+
+    private Integer getConfirmedRequests(Long id) {
+        return participationRequestRepository.countByEvent_IdAndStatus(id, RequestStatus.CONFIRMED);
     }
 }

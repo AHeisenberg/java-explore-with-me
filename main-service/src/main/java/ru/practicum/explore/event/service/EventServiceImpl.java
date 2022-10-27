@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.client.EndpointHit;
 import ru.practicum.explore.client.stats.StatsClient;
@@ -33,7 +34,7 @@ public class EventServiceImpl implements EventService {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
-    public Collection<EventShortDto> findAllEvents(Map<String, Object> parameters) {
+    public ResponseEntity<Object> findAllEvents(Map<String, Object> parameters) {
         log.info("Find all events by parameters {}", parameters);
         Pageable pageable = PageRequest.of((Integer) parameters.get("from") / (Integer) parameters.get("size"),
                 (Integer) parameters.get("size"));
@@ -53,16 +54,16 @@ public class EventServiceImpl implements EventService {
         if (parameters.get("sort").equals("VIEWS")) {
             listEventShort.stream().sorted(Comparator.comparing(EventShortDto::getViews));
         }
-        return listEventShort;
+        return ResponseEntity.ok(listEventShort);
     }
 
     @Override
-    public Optional<EventFullDto> findEventById(Long id) {
+    public ResponseEntity<Object> findEventById(Long id) {
         log.info("Find event by id={}", id);
         commonValidator.eventValidator(id);
         Event event = eventRepository.findById(id).get();
         EventFullDto eventFullDto = eventMapper.toEventFullDto(event);
-        return Optional.of(eventFullDto);
+        return ResponseEntity.ok(Optional.of(eventFullDto));
     }
 
     @Override

@@ -1,26 +1,23 @@
 package ru.practicum.explore.compilation.service;
 
-import ru.practicum.explore.compilation.dto.CompilationDto;
+import org.springframework.http.ResponseEntity;
 import ru.practicum.explore.compilation.dto.NewCompilationDto;
-
-import java.util.Collection;
-import java.util.Optional;
 
 public interface CompilationService {
 
-    void pinCompilation(Long compId);
+    ResponseEntity<Object> pinCompilation(Long compId);
 
-    void unpinCompilation(Long compId);
+    ResponseEntity<Object> unpinCompilation(Long compId);
 
-    Collection<CompilationDto> findAll(Boolean pinned, Integer from, Integer size);
+    ResponseEntity<Object> findAll(Boolean pinned, Integer from, Integer size);
 
-    Optional<CompilationDto> findCompilationById(Long compId);
+    ResponseEntity<Object> findCompilationById(Long compId);
 
-    CompilationDto createCompilation(NewCompilationDto newCompilationDto);
+    ResponseEntity<Object> createCompilation(NewCompilationDto newCompilationDto);
 
-    void deleteCompilation(Long compId);
+    ResponseEntity<Object> deleteCompilation(Long compId);
 
-    void deleteEventInCompilation(Long compId, Long eventId);
+    ResponseEntity<Object> deleteEventInCompilation(Long compId, Long eventId);
 
-    void addEventInCompilation(Long compId, Long eventId);
+    ResponseEntity<Object> addEventInCompilation(Long compId, Long eventId);
 }

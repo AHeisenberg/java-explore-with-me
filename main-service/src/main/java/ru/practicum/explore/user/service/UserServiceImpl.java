@@ -4,11 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.category.repository.CategoryRepository;
-import ru.practicum.explore.event.dto.EventFullDto;
-import ru.practicum.explore.event.dto.EventShortDto;
 import ru.practicum.explore.event.dto.NewEventDto;
 import ru.practicum.explore.event.dto.UpdateEventRequest;
 import ru.practicum.explore.event.mapper.EventMapper;
@@ -19,13 +18,11 @@ import ru.practicum.explore.exc.ForbiddenRequestException;
 import ru.practicum.explore.exc.ObjectNotFoundException;
 import ru.practicum.explore.location.model.Location;
 import ru.practicum.explore.location.service.LocationService;
-import ru.practicum.explore.request.dto.ParticipationRequestDto;
 import ru.practicum.explore.request.mapper.RequestMapper;
 import ru.practicum.explore.request.model.ParticipationRequest;
 import ru.practicum.explore.request.model.RequestStatus;
 import ru.practicum.explore.request.repository.ParticipationRequestRepository;
 import ru.practicum.explore.user.dto.NewUserRequest;
-import ru.practicum.explore.user.dto.UserDto;
 import ru.practicum.explore.user.mapper.UserMapper;
 import ru.practicum.explore.user.model.User;
 import ru.practicum.explore.user.repository.UserRepository;
@@ -33,7 +30,6 @@ import ru.practicum.explore.validator.CommonValidator;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -59,17 +55,17 @@ class UserServiceImpl implements UserService {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
-    public Collection<EventShortDto> findAllEventsByUserId(Long userId, Integer from, Integer size) {
+    public ResponseEntity<Object> findAllEventsByUserId(Long userId, Integer from, Integer size) {
         log.info("Find all events by user id={}", userId);
         commonValidator.userValidator(userId);
         Pageable pageable = PageRequest.of(from / size, size);
-        return eventRepository.findAllByInitiatorId(userId, pageable).stream()
+        return ResponseEntity.ok(eventRepository.findAllByInitiatorId(userId, pageable).stream()
                 .map(eventMapper::toEventShortDto)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     @Override
-    public EventFullDto patchEventByUser(Long userId, UpdateEventRequest updateEventRequest) {
+    public ResponseEntity<Object> patchEventByUser(Long userId, UpdateEventRequest updateEventRequest) {
         log.info("Patch event by user id={}", userId);
         commonValidator.userValidator(userId);
         commonValidator.eventValidator(updateEventRequest.getEventId());
@@ -82,15 +78,16 @@ class UserServiceImpl implements UserService {
             Category category = categoryRepository.findById(Long.valueOf(updateEventRequest.getCategory())).get();
             event.setCategory(category);
         }
-        eventMapper.updateEventFromNewEventDto(updateEventRequest, event);
+        updateEventFromNewEventDto(updateEventRequest, event);
         if (event.getState().equals(EventStatus.CANCELED)) {
             event.setState(EventStatus.PENDING);
         }
-        return eventMapper.toEventFullDto(eventRepository.save(event));
+        return ResponseEntity.ok(eventMapper.toEventFullDto(eventRepository.save(event)));
     }
 
+
     @Override
-    public EventFullDto postEvent(Long userId, NewEventDto newEventDto) {
+    public ResponseEntity<Object> postEvent(Long userId, NewEventDto newEventDto) {
         log.info("Post new event by id={}", userId);
         commonValidator.userValidator(userId);
         LocalDateTime eventDate = LocalDateTime.parse(newEventDto.getEventDate(), FORMATTER);
@@ -100,45 +97,45 @@ class UserServiceImpl implements UserService {
         Category category = categoryRepository.findById(Long.valueOf(newEventDto.getCategory())).get();
         Event event = eventMapper.toEvent(newEventDto, user, location, category, eventDate);
         event.setState(EventStatus.PENDING);
-        return eventMapper.toEventFullDto(eventRepository.save(event));
+        return ResponseEntity.ok(eventMapper.toEventFullDto(eventRepository.save(event)));
     }
 
     @Override
-    public EventFullDto findEventFull(Long userId, Long eventId) {
+    public ResponseEntity<Object> findEventFull(Long userId, Long eventId) {
         log.info("Get event id={} user id={}", eventId, userId);
         commonValidator.userValidator(userId);
         commonValidator.eventValidator(eventId);
         Event event = eventRepository.findById(eventId).get();
         validatorForSomeUser(userId, event);
 
-        return eventMapper.toEventFullDto(event);
+        return ResponseEntity.ok(eventMapper.toEventFullDto(event));
     }
 
     @Override
-    public EventFullDto cancelEventByUser(Long userId, Long eventId) {
+    public ResponseEntity<Object> cancelEventByUser(Long userId, Long eventId) {
         log.info("Cancel event id={} by user id={}", eventId, userId);
         commonValidator.userValidator(userId);
         commonValidator.eventValidator(eventId);
         Event event = eventRepository.findById(eventId).get();
         validatorVorFullEvent(userId, event);
         event.setState(EventStatus.CANCELED);
-        return eventMapper.toEventFullDto(eventRepository.save(event));
+        return ResponseEntity.ok(eventMapper.toEventFullDto(eventRepository.save(event)));
     }
 
     @Override
-    public Collection<ParticipationRequestDto> findRequestByUser(Long userId, Long eventId) {
+    public ResponseEntity<Object> findRequestByUser(Long userId, Long eventId) {
         log.info("Get request by user id={} and event id={}", userId, eventId);
         commonValidator.userValidator(userId);
         commonValidator.eventValidator(eventId);
         Event event = eventRepository.findById(eventId).get();
         validatorForSomeUser(userId, event);
-        return participationRequestRepository.findAllByEvent(eventId, userId).stream()
+        return ResponseEntity.ok(participationRequestRepository.findAllByEvent(eventId, userId).stream()
                 .map(requestMapper::toParticipationRequestDto)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     @Override
-    public ParticipationRequestDto approveConfirmUserByEvent(Long userId, Long eventId, Long reqId) {
+    public ResponseEntity<Object> approveConfirmUserByEvent(Long userId, Long eventId, Long reqId) {
         log.info("Approve request={} by user id={} and event id={}", reqId, userId, eventId);
         commonValidator.userValidator(userId);
         commonValidator.eventValidator(eventId);
@@ -154,11 +151,12 @@ class UserServiceImpl implements UserService {
             participationRequest.setStatus(RequestStatus.REJECTED);
         }
         participationRequest.setStatus(RequestStatus.CONFIRMED);
-        return requestMapper.toParticipationRequestDto(participationRequestRepository.save(participationRequest));
+        return ResponseEntity.ok(
+                requestMapper.toParticipationRequestDto(participationRequestRepository.save(participationRequest)));
     }
 
     @Override
-    public ParticipationRequestDto approveRejectUserByEvent(Long userId, Long eventId, Long reqId) {
+    public ResponseEntity<Object> approveRejectUserByEvent(Long userId, Long eventId, Long reqId) {
         log.info("Reject request={} by user id={} and event id={}", reqId, userId, eventId);
         commonValidator.userValidator(userId);
         commonValidator.eventValidator(eventId);
@@ -169,20 +167,21 @@ class UserServiceImpl implements UserService {
         }
         ParticipationRequest participationRequest = participationRequestRepository.findById(reqId).get();
         participationRequest.setStatus(RequestStatus.REJECTED);
-        return requestMapper.toParticipationRequestDto(participationRequestRepository.save(participationRequest));
+        return ResponseEntity.ok(
+                requestMapper.toParticipationRequestDto(participationRequestRepository.save(participationRequest)));
     }
 
     @Override
-    public Collection<ParticipationRequestDto> findRequestsByUser(Long userId) {
+    public ResponseEntity<Object> findRequestsByUser(Long userId) {
         log.info("Find all request by id={}", userId);
         commonValidator.userValidator(userId);
-        return participationRequestRepository.findAllByRequester_IdOrderById(userId).stream()
+        return ResponseEntity.ok(participationRequestRepository.findAllByRequester_IdOrderById(userId).stream()
                 .map(requestMapper::toParticipationRequestDto)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     @Override
-    public ParticipationRequestDto postRequestUser(Long userId, Long eventId) {
+    public ResponseEntity<Object> postRequestUser(Long userId, Long eventId) {
         log.info("Post request by user id={} and event id={}", userId, eventId);
         commonValidator.userValidator(userId);
         commonValidator.eventValidator(eventId);
@@ -206,14 +205,15 @@ class UserServiceImpl implements UserService {
             if (event.getParticipantLimit() != 0 && Objects.equals(event.getParticipantLimit(), count)) {
                 participationRequest.setStatus(RequestStatus.REJECTED);
             }
-            return requestMapper.toParticipationRequestDto(participationRequestRepository.save(participationRequest));
+            return ResponseEntity.ok(
+                    requestMapper.toParticipationRequestDto(participationRequestRepository.save(participationRequest)));
         } else {
             throw new ForbiddenRequestException(EVENT_INITIATOR_IS_WRONG);
         }
     }
 
     @Override
-    public ParticipationRequestDto cancelRequestByUser(Long userId, Long requestId) {
+    public ResponseEntity<Object> cancelRequestByUser(Long userId, Long requestId) {
         log.info("Patch request id={} by user id={}", userId, requestId);
         commonValidator.userValidator(userId);
         commonValidator.requestValidator(requestId);
@@ -222,30 +222,32 @@ class UserServiceImpl implements UserService {
         }
         ParticipationRequest participationRequest = participationRequestRepository.findById(requestId).get();
         participationRequest.setStatus(RequestStatus.CANCELED);
-        return requestMapper.toParticipationRequestDto(participationRequestRepository.save(participationRequest));
+        return ResponseEntity.ok(
+                requestMapper.toParticipationRequestDto(participationRequestRepository.save(participationRequest)));
     }
 
     @Override
-    public Collection<UserDto> findAllUsers(List<Long> ids, Integer from, Integer size) {
+    public ResponseEntity<Object> findAllUsers(List<Long> ids, Integer from, Integer size) {
         log.info("Admin get all users");
         Pageable pageable = PageRequest.of(from / size, size);
-        return userRepository.findAllByIdOrderByIdDesc(ids, pageable).stream()
+        return ResponseEntity.ok(userRepository.findAllByIdOrderByIdDesc(ids, pageable).stream()
                 .map(userMapper::toUserDto)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     @Override
-    public UserDto postUser(NewUserRequest userRequest) {
+    public ResponseEntity<Object> postUser(NewUserRequest userRequest) {
         log.info("Admin post user");
         User user = userMapper.toUser(userRequest);
-        return userMapper.toUserDto(userRepository.save(user));
+        return ResponseEntity.ok(userMapper.toUserDto(userRepository.save(user)));
     }
 
     @Override
-    public void deleteUser(Long userId) {
+    public ResponseEntity<Object> deleteUser(Long userId) {
         log.info("Admin delete user by id={}", userId);
         commonValidator.userValidator(userId);
         userRepository.deleteById(userId);
+        return ResponseEntity.ok(null);
     }
 
     private void validatorVorFullEvent(Long userId, Event event) {
@@ -277,6 +279,27 @@ class UserServiceImpl implements UserService {
         }
         if (event.getState().equals(EventStatus.PUBLISHED)) {
             throw new ForbiddenRequestException(EVENT_STATUS_IS_WRONG);
+        }
+    }
+
+    private void updateEventFromNewEventDto(UpdateEventRequest newEventDto, Event event) {
+        if (newEventDto.getAnnotation() != null) {
+            event.setAnnotation(newEventDto.getAnnotation());
+        }
+        if (newEventDto.getDescription() != null) {
+            event.setDescription(newEventDto.getDescription());
+        }
+        if (newEventDto.getEventDate() != null) {
+            event.setEventDate(LocalDateTime.parse(newEventDto.getEventDate(), FORMATTER));
+        }
+        if (newEventDto.getPaid() != null) {
+            event.setPaid(newEventDto.getPaid());
+        }
+        if (newEventDto.getParticipantLimit() != null) {
+            event.setParticipantLimit(newEventDto.getParticipantLimit());
+        }
+        if (newEventDto.getTitle() != null) {
+            event.setTitle(newEventDto.getTitle());
         }
     }
 }

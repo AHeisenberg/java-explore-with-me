@@ -1,6 +1,7 @@
 package ru.practicum.explore.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.category.dto.CategoryDto;
 import ru.practicum.explore.category.dto.NewCategoryDto;
@@ -14,18 +15,18 @@ public class AdminCategoryController {
     private final CategoryService categoryService;
 
     @PatchMapping
-    public CategoryDto patchCategory(@RequestBody CategoryDto categoryDto) {
+    public ResponseEntity<Object> patchCategory(@RequestBody CategoryDto categoryDto) {
         return categoryService.patchCategory(categoryDto);
     }
 
     @PostMapping
-    public CategoryDto postCategory(@RequestBody NewCategoryDto newCategoryDto) {
+    public ResponseEntity<Object> postCategory(@RequestBody NewCategoryDto newCategoryDto) {
         return categoryService.postCategory(newCategoryDto);
     }
 
     @DeleteMapping("/{catId}")
-    public void deleteCategory(@PathVariable Long catId) {
-        categoryService.deleteCategory(catId);
+    public ResponseEntity<Object> deleteCategory(@PathVariable Long catId) {
+        return categoryService.deleteCategory(catId);
     }
 
 

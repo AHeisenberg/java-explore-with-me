@@ -1,9 +1,8 @@
 package ru.practicum.explore.admin;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.explore.compilation.dto.CompilationDto;
 import ru.practicum.explore.compilation.dto.NewCompilationDto;
 import ru.practicum.explore.compilation.service.CompilationService;
 
@@ -15,32 +14,32 @@ public class AdminCompilationController {
     private final CompilationService compilationService;
 
     @PatchMapping("/{compId}/pin")
-    public void pinCompilation(@PathVariable Long compId) {
-        compilationService.pinCompilation(compId);
+    public ResponseEntity<Object> pinCompilation(@PathVariable Long compId) {
+        return compilationService.pinCompilation(compId);
     }
 
     @DeleteMapping("/{compId}/pin")
-    public void unpinCompilation(@PathVariable Long compId) {
-        compilationService.unpinCompilation(compId);
+    public ResponseEntity<Object> unpinCompilation(@PathVariable Long compId) {
+        return   compilationService.unpinCompilation(compId);
     }
 
     @PostMapping
-    public CompilationDto createCompilation(@RequestBody NewCompilationDto newCompilationDto) {
+    public ResponseEntity<Object> createCompilation(@RequestBody NewCompilationDto newCompilationDto) {
         return compilationService.createCompilation(newCompilationDto);
     }
 
     @DeleteMapping("/{compId}")
-    public void deleteCompilation(@PathVariable Long compId) {
-        compilationService.deleteCompilation(compId);
+    public ResponseEntity<Object> deleteCompilation(@PathVariable Long compId) {
+        return   compilationService.deleteCompilation(compId);
     }
 
     @DeleteMapping("/{compId}/events/{eventId}")
-    public void deleteEventInCompilation(@PathVariable Long compId, @PathVariable Long eventId) {
-        compilationService.deleteEventInCompilation(compId, eventId);
+    public ResponseEntity<Object> deleteEventInCompilation(@PathVariable Long compId, @PathVariable Long eventId) {
+        return   compilationService.deleteEventInCompilation(compId, eventId);
     }
 
     @PatchMapping("/{compId}/events/{eventId}")
-    public void addEventInCompilation(@PathVariable Long compId, @PathVariable Long eventId) {
-        compilationService.addEventInCompilation(compId, eventId);
+    public ResponseEntity<Object> addEventInCompilation(@PathVariable Long compId, @PathVariable Long eventId) {
+        return compilationService.addEventInCompilation(compId, eventId);
     }
 }
