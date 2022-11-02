@@ -33,7 +33,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public ResponseEntity<Object> pinCompilation(Long compId) {
         log.info("Admin pin compilation by id={}", compId);
-        commonValidator.compilationValidator(compId);
+        commonValidator.validateForCompilation(compId);
         Compilation compilation = compilationRepository.findById(compId).get();
         compilation.setPinned(true);
         return ResponseEntity.ok(compilationRepository.save(compilation));
@@ -42,7 +42,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public ResponseEntity<Object> unpinCompilation(Long compId) {
         log.info("Admin unpin compilation by id={}", compId);
-        commonValidator.compilationValidator(compId);
+        commonValidator.validateForCompilation(compId);
         Compilation compilation = compilationRepository.findById(compId).get();
         compilation.setPinned(false);
         return ResponseEntity.ok(compilationRepository.save(compilation));
@@ -50,6 +50,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public ResponseEntity<Object> findAll(Boolean pinned, Integer from, Integer size) {
+        log.info("Find all categories from={}, size={}", from, size);
         PageRequest page = PageRequest.of(from / size, size);
         Collection<Compilation> compilations = compilationRepository.findAll(pinned, page);
         List<CompilationDto> compilationsDto =
@@ -60,7 +61,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public ResponseEntity<Object> findCompilationById(Long compId) {
         log.info("Find compilation by id={}", compId);
-        commonValidator.compilationValidator(compId);
+        commonValidator.validateForCompilation(compId);
         Compilation compilation = compilationRepository.findById(compId).get();
         return ResponseEntity.ok(Optional.of(compilationMapper.toCompilationDto(compilation)));
     }
@@ -77,7 +78,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public ResponseEntity<Object> deleteCompilation(Long compId) {
         log.info("Admin delete compilation id={}", compId);
-        commonValidator.compilationValidator(compId);
+        commonValidator.validateForCompilation(compId);
         compilationRepository.deleteById(compId);
         log.info("Admin has compilation id={} deleted", compId);
         log.info("Compilation  with id={} is not exist={}", compId, !compilationRepository.existsById(compId));
@@ -87,8 +88,8 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public ResponseEntity<Object> deleteEventInCompilation(Long compId, Long eventId) {
         log.info("Admin delete event id={} in compilation id={}", eventId, compId);
-        commonValidator.compilationValidator(compId);
-        commonValidator.eventValidator(eventId);
+        commonValidator.validateForCompilation(compId);
+        commonValidator.validateForEvent(eventId);
         Compilation compilation = compilationRepository.findById(compId).get();
         Event event = eventRepository.findById(eventId).get();
         if (!compilation.getEvents().contains(event)) {
@@ -101,8 +102,8 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public ResponseEntity<Object> addEventInCompilation(Long compId, Long eventId) {
         log.info("Admin add event id={} in compilation id={}", eventId, compId);
-        commonValidator.compilationValidator(compId);
-        commonValidator.eventValidator(eventId);
+        commonValidator.validateForCompilation(compId);
+        commonValidator.validateForEvent(eventId);
         Compilation compilation = compilationRepository.findById(compId).get();
         Event event = eventRepository.findById(eventId).get();
         compilation.getEvents().add(event);

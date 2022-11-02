@@ -28,7 +28,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ResponseEntity<Object> findAll(Integer from, Integer size) {
-        log.info("Admin find all categories");
+        log.info("Admin find all categories from={}, size={}", from, size);
         Pageable pageable = PageRequest.of(from / size, size);
         Page<Category> categoryCollection = categoryRepository.findAll(pageable);
         return ResponseEntity.ok(categoryCollection.stream()
@@ -39,7 +39,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ResponseEntity<Object> findCategoryById(Long catId) {
         log.info("Admin find category by id={}", catId);
-        commonValidator.categoryValidator(catId);
+        commonValidator.validateForCategory(catId);
         Category category = categoryRepository.findById(catId).get();
         return ResponseEntity.ok(Optional.of(categoryMapper.toCategoryDto(category)));
     }
@@ -47,7 +47,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ResponseEntity<Object> patchCategory(CategoryDto categoryDto) {
         log.info("Admin patch category={}", categoryDto.getName());
-        commonValidator.categoryValidator(categoryDto.getId());
+        commonValidator.validateForCategory(categoryDto.getId());
         if (categoryRepository.findFirstByName(categoryDto.getName()).isPresent()) {
             throw new ForbiddenRequestException("Name is invalid");
         }
@@ -66,7 +66,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ResponseEntity<Object> deleteCategory(Long catId) {
         log.info("Admin delete category by id={}", catId);
-        commonValidator.categoryValidator(catId);
+        commonValidator.validateForCategory(catId);
         categoryRepository.deleteById(catId);
         return ResponseEntity.ok(null);
     }

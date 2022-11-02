@@ -32,18 +32,25 @@ public class AdminEventServiceImpl implements AdminEventService {
     private final EventMapper eventMapper;
     private final CommonValidator commonValidator;
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final String FROM = "from";
+    private static final String SIZE = "size";
+    private static final String USERS = "users";
+    private static final String STATES = "states";
+    private static final String CATEGORIES = "categories";
+    private static final String RANGE_START = "rangeStart";
+    private static final String RANGE_END = "rangeEnd";
 
 
     @Override
     public ResponseEntity<Object> findAllEvents(Map<String, Object> parameters) {
         log.info("Admin find events by parameters {}", parameters);
-        Pageable pageable = PageRequest.of((Integer) parameters.get("from") / (Integer) parameters.get("size"),
-                (Integer) parameters.get("size"));
-        List<Long> users = (List<Long>) parameters.get("users");
-        List<EventStatus> states = (List<EventStatus>) parameters.get("states");
-        List<Long> catIds = (List<Long>) parameters.get("categories");
-        LocalDateTime rangeStart = LocalDateTime.parse((String) parameters.get("rangeStart"), FORMATTER);
-        LocalDateTime rangeEnd = LocalDateTime.parse((String) parameters.get("rangeEnd"), FORMATTER);
+        Pageable pageable = PageRequest.of((Integer) parameters.get(FROM) / (Integer) parameters.get(SIZE),
+                (Integer) parameters.get(SIZE));
+        List<Long> users = (List<Long>) parameters.get(USERS);
+        List<EventStatus> states = (List<EventStatus>) parameters.get(STATES);
+        List<Long> catIds = (List<Long>) parameters.get(CATEGORIES);
+        LocalDateTime rangeStart = LocalDateTime.parse((String) parameters.get(RANGE_START), FORMATTER);
+        LocalDateTime rangeEnd = LocalDateTime.parse((String) parameters.get(RANGE_END), FORMATTER);
         return ResponseEntity.ok(
                 eventRepository.findAllEvents(users, states, catIds, rangeStart, rangeEnd, pageable).stream()
                         .map(eventMapper::toEventFullDto)
@@ -53,7 +60,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     @Override
     public ResponseEntity<Object> putEvent(Long eventId, AdminUpdateEventRequest adminUpdateEventRequest) {
         log.info("Admin Put event id={}", eventId);
-        commonValidator.eventValidator(eventId);
+        commonValidator.validateForEvent(eventId);
         LocalDateTime eventDate = LocalDateTime.parse(adminUpdateEventRequest.getEventDate(), FORMATTER);
         if (!eventDate.isAfter(LocalDateTime.now().minusHours(2))) {
             throw new ForbiddenRequestException("Date is not correct");
@@ -75,7 +82,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     @Override
     public ResponseEntity<Object> approvePublishEvent(Long eventId) {
         log.info("Admin approve publish event id={}", eventId);
-        commonValidator.eventValidator(eventId);
+        commonValidator.validateForEvent(eventId);
         Event event = eventRepository.findById(eventId).get();
         event.setState(EventStatus.PUBLISHED);
         eventRepository.save(event);
@@ -85,7 +92,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     @Override
     public ResponseEntity<Object> approveRejectEvent(Long eventId) {
         log.info("Admin approve reject event id={}", eventId);
-        commonValidator.eventValidator(eventId);
+        commonValidator.validateForEvent(eventId);
         Event event = eventRepository.findById(eventId).get();
         event.setState(EventStatus.CANCELED);
         eventRepository.save(event);

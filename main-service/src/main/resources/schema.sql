@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS events
     request_moderation BOOLEAN,
     published_on       TIMESTAMP WITHOUT TIME ZONE,
     title              VARCHAR(1024) NOT NULL,
-    state              VARCHAR(32)
+    state              VARCHAR(10)
 );
 
 CREATE TABLE IF NOT EXISTS compilations
@@ -57,5 +57,5 @@ CREATE TABLE IF NOT EXISTS requests
     created      TIMESTAMP WITHOUT TIME ZONE,
     event_id     BIGINT REFERENCES events (id) ON DELETE CASCADE,
     requester_id BIGINT REFERENCES users (id) ON DELETE CASCADE,
-    status       VARCHAR(32)
+    status       VARCHAR(10)
 )
