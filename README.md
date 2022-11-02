@@ -10,8 +10,8 @@ Statistics service - stores the number of views and allows you to make various s
 
 PR: https://github.com/AHeisenberg/java-explore-with-me/pull/3
 
-![Service architecture](https://disk.yandex.ru/i/8P2ueKWOHUzK8Q)
+![Service architecture](/architecture.jpg)
 
-![Main service database](https://disk.yandex.ru/i/vp_zjqM7AynioQ)
+![Main service database](/er-ewm-service.png)
 
-![Statistics service database](https://disk.yandex.ru/i/lGAj4AyAMF3cAQ)
+![Statistics service database](/er-stats-service.png)
