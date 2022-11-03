@@ -8,11 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-import ru.practicum.explore.client.base.BaseClient;
 import ru.practicum.explore.client.EndpointHit;
-
-import java.util.List;
-import java.util.Map;
+import ru.practicum.explore.client.base.BaseClient;
 
 @Service
 @Slf4j
@@ -33,12 +30,4 @@ public class StatsClient extends BaseClient {
         return post("/hit", endpointHit);
     }
 
-    public ResponseEntity<Object> getStats(String start, String end,
-                                           List<String> uris, Boolean unique) {
-        Map<String, Object> parameters = Map.of("start", start,
-                "end", end,
-                "uris", uris,
-                "unique", unique);
-        return get("/stats?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
-    }
 }
