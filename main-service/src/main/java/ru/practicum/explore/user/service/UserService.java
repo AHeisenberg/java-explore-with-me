@@ -36,4 +36,5 @@ public interface UserService {
     ResponseEntity<Object> postUser(NewUserRequest newUserRequest);
 
     ResponseEntity<Object> deleteUser(Long userId);
+
 }

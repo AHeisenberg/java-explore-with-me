@@ -26,10 +26,7 @@ public class UserController {
         return userService.patchEventByUser(userId, updateEventRequest);
     }
 
-    @PostMapping("/{userId}/events")
-    public ResponseEntity<Object> postEvent(@PathVariable Long userId, @RequestBody NewEventDto newEventDto) {
-        return userService.postEvent(userId, newEventDto);
-    }
+
 
     @GetMapping("/{userId}/events/{eventId}")
     public ResponseEntity<Object> findEventFull(@PathVariable Long userId, @PathVariable Long eventId) {
@@ -71,5 +68,11 @@ public class UserController {
     @PatchMapping("/{userId}/requests/{requestId}/cancel")
     public ResponseEntity<Object> cancelRequestByUser(@PathVariable Long userId, @PathVariable Long requestId) {
         return userService.cancelRequestByUser(userId, requestId);
+    }
+
+    @PostMapping("/{userId}/events")
+    public ResponseEntity<Object> postEvent(@PathVariable Long userId,
+                                            @RequestBody NewEventDto newEventDto) {
+        return userService.postEvent(userId, newEventDto);
     }
 }

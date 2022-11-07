@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.practicum.explore.category.model.Category;
 import ru.practicum.explore.category.repository.CategoryRepository;
+import ru.practicum.explore.comment.mapper.CommentMapper;
+import ru.practicum.explore.comment.repository.CommentRepository;
 import ru.practicum.explore.event.dto.NewEventDto;
 import ru.practicum.explore.event.dto.UpdateEventRequest;
 import ru.practicum.explore.event.mapper.EventMapper;
@@ -38,6 +40,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 class UserServiceImpl implements UserService {
+
+    private final CommentRepository commentRepository;
+    private final CommentMapper commentMapper;
+
     private final UserMapper userMapper;
     private final EventMapper eventMapper;
     private final RequestMapper requestMapper;
@@ -48,6 +54,8 @@ class UserServiceImpl implements UserService {
     private final CategoryRepository categoryRepository;
     private final CommonValidator commonValidator;
 
+    private static final String COMMENT_IS_INVALID = "Comment is invalid.";
+    private static final String AUTHOR_OF_COMMENT_IS_WRONG = "Author of comment is wrong";
     private static final String EVENT_INITIATOR_IS_WRONG = "Event initiator is wrong";
     private static final String EVENT_STATUS_IS_WRONG = "Event status is wrong";
     private static final String CATEGORY_NOT_FOUND = "Category not found.";
@@ -302,4 +310,6 @@ class UserServiceImpl implements UserService {
             event.setTitle(newEventDto.getTitle());
         }
     }
+
+
 }

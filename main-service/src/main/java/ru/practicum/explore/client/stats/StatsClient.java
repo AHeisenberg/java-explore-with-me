@@ -11,6 +11,9 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.explore.client.EndpointHit;
 import ru.practicum.explore.client.base.BaseClient;
 
+import java.util.List;
+import java.util.Map;
+
 @Service
 @Slf4j
 public class StatsClient extends BaseClient {
@@ -28,6 +31,15 @@ public class StatsClient extends BaseClient {
     public ResponseEntity<Object> save(EndpointHit endpointHit) {
 
         return post("/hit", endpointHit);
+    }
+
+    public ResponseEntity<Object> getStats(String start, String end,
+                                           List<String> uris, Boolean unique) {
+        Map<String, Object> parameters = Map.of("start", start,
+                "end", end,
+                "uris", uris,
+                "unique", unique);
+        return get("/stats?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
     }
 
 }

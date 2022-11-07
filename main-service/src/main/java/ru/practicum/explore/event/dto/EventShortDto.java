@@ -6,7 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.explore.category.dto.CategoryDto;
+import ru.practicum.explore.comment.dto.CommentDto;
 import ru.practicum.explore.user.dto.UserShortDto;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -32,4 +35,7 @@ public class EventShortDto {
     private String title;
 
     private Integer views;
+
+    private List<CommentDto> comments;
+
 }
