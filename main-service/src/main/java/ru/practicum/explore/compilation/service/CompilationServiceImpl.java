@@ -68,6 +68,7 @@ public class CompilationServiceImpl implements CompilationService {
     public ResponseEntity<Object> createCompilation(NewCompilationDto newCompilationDto) {
         log.info("Admin post compilation title={}", newCompilationDto.getTitle());
         List<Event> events = eventRepository.findAllById(newCompilationDto.getEvents());
+
         Compilation compilation = compilationMapper.toCompilation(newCompilationDto, events);
         compilationRepository.save(compilation);
         return ResponseEntity.ok(compilationMapper.toCompilationDto(compilation));
